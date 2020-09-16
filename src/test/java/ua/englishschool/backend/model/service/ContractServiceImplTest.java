@@ -41,7 +41,7 @@ public class ContractServiceImplTest {
     }
 
     @Test
-    void whenSave_thenReturnContract() {
+    void whenCreate_thenReturnContract() {
         contract.setId(0);
         when(contractRepository.saveAndFlush(contract)).thenReturn(contract);
 

@@ -41,7 +41,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    void whenSave_thenReturnStudent() {
+    void whenCreate_thenReturnStudent() {
         student.setId(0);
         when(studentRepository.saveAndFlush(student)).thenReturn(student);
 

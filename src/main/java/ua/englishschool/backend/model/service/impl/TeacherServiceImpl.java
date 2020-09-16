@@ -39,16 +39,20 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Optional<Teacher> getById(long id) {
-        return Optional.empty();
+        return teacherRepository.findById(id);
     }
 
     @Override
     public boolean delete(long id) {
+        if (isExists(id)) {
+            teacherRepository.deleteById(id);
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean isExists(long id) {
-        return false;
+        return teacherRepository.existsById(id);
     }
 }

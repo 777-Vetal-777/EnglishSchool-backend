@@ -43,7 +43,7 @@ public class CourseServiceImplTest {
     }
 
     @Test
-    void whenSave_thenReturnCourse() {
+    void whenCreate_thenReturnCourse() {
         course.setId(0);
         when(courseRepository.saveAndFlush(course)).thenReturn(course);
 
