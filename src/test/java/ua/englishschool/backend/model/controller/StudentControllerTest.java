@@ -32,7 +32,11 @@ public class StudentControllerTest {
 
     private static final String URL = "/students";
 
+    private static final String GET_BY_PHONE = URL + "/phone/{phone}";
+
     private static final long STUDENT_ID = 1;
+
+    private static final String PHONE = "7777777777";
 
     @Autowired
     private MockMvc server;
@@ -51,7 +55,7 @@ public class StudentControllerTest {
         student.setFirstName("AAA");
         student.setLastName("BBB");
         student.setAddress("CCC");
-        student.setPhoneNumber("12345");
+        student.setPhoneNumber(PHONE);
 
 
     }
@@ -152,6 +156,30 @@ public class StudentControllerTest {
                 .andExpect(status().isOk());
 
         verify(studentService).getAll();
+
+    }
+
+    @Test
+    void getStudentByPhone_ReturnStudent() throws Exception {
+        when(studentService.findStudentByPhone(PHONE)).thenReturn(Optional.ofNullable(student));
+
+        server.perform(get(GET_BY_PHONE, PHONE))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(student)))
+                .andExpect(status().isOk());
+
+        verify(studentService).findStudentByPhone(PHONE);
+    }
+
+    @Test
+    void getStudentByPhone_IfNotFoundStudent() throws Exception {
+        when(studentService.findStudentByPhone(PHONE)).thenReturn(Optional.empty());
+
+        server.perform(get(GET_BY_PHONE, PHONE))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        verify(studentService).findStudentByPhone(PHONE);
 
     }
 

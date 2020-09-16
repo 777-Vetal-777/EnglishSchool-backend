@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.englishschool.backend.entity.Student;
-import ua.englishschool.backend.entity.exception.DeleteEntityException;
 import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.service.StudentService;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
@@ -23,6 +21,12 @@ import java.util.List;
 public class StudentController {
 
     private static final String URL = "/students";
+
+    private static final String GET_BY_PHONE = URL + "/phone/{phone}";
+
+    private static final String GET_BY_ID = URL + "/{id}";
+
+    private static final String DELETE_BY_ID = URL + "/{id}";
 
     @Autowired
     private StudentService studentService;
@@ -34,7 +38,7 @@ public class StudentController {
         return studentService.create(student).getId();
     }
 
-    @DeleteMapping(URL + "/{id}")
+    @DeleteMapping(DELETE_BY_ID)
     public void deleteById(@PathVariable long id) {
         if (!studentService.delete(id)) {
             throw new EntityNotFoundException("Delete was failed for StudentId: " + id);
@@ -49,7 +53,7 @@ public class StudentController {
         }
     }
 
-    @GetMapping(URL + "/{id}")
+    @GetMapping(GET_BY_ID)
     public Student getById(@PathVariable("id") long id) {
         return studentService.getById(id).orElseThrow(() -> new EntityNotFoundException("Student was not found with id: " + id));
     }
@@ -57,5 +61,11 @@ public class StudentController {
     @GetMapping(URL)
     public List<Student> getAll() {
         return studentService.getAll();
+    }
+
+    @GetMapping(GET_BY_PHONE)
+    public Student getByPhone(@PathVariable("phone") String phone) {
+        return studentService.findStudentByPhone(phone)
+                .orElseThrow(() -> new EntityNotFoundException("Student was not found with phone: " + phone));
     }
 }

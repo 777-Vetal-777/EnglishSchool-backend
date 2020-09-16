@@ -25,6 +25,9 @@ import static org.mockito.Mockito.when;
 public class StudentServiceImplTest {
 
     private static final long STUDENT_ID = 1;
+
+    private static final String PHONE = "777777777";
+
     @InjectMocks
     private StudentServiceImpl studentService;
 
@@ -38,6 +41,7 @@ public class StudentServiceImplTest {
         student = new Student();
         student.setId(STUDENT_ID);
         student.setFirstName("Vitaliy");
+        student.setPhoneNumber(PHONE);
     }
 
     @Test
@@ -122,6 +126,16 @@ public class StudentServiceImplTest {
         studentService.isExists(STUDENT_ID);
 
         verify(studentRepository).existsById(STUDENT_ID);
+    }
+
+    @Test
+    void whenFindStudentByPhone_thenReturnStudent() {
+        when(studentRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.ofNullable(student));
+
+        Optional<Student> result = studentService.findStudentByPhone(PHONE);
+
+        assertEquals(student, result.get());
+        verify(studentRepository).findByPhoneNumber(PHONE);
     }
 
 }

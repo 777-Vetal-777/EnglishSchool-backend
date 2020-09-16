@@ -56,4 +56,9 @@ public class StudentServiceImpl implements StudentService {
     public boolean isExists(long id) {
         return studentRepository.existsById(id);
     }
+
+    @Override
+    public Optional<Student> findStudentByPhone(String phone) {
+        return studentRepository.findByPhoneNumber(phone);
+    }
 }
