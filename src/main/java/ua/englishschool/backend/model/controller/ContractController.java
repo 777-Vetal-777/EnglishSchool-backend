@@ -28,7 +28,7 @@ public class ContractController {
 
     private static final String DELETE_BY_ID = URL + "/{id}";
 
-    private static final String GET_ALL_OPEN = URL + "/active";
+    private static final String GET_ALL_WITH_STATUS_OPEN = URL + "/active";
 
     @Autowired
     private ContractService contractService;
@@ -62,15 +62,15 @@ public class ContractController {
         }
     }
 
-    @PutMapping
+    @PutMapping(URL)
     public void update(@RequestBody Contract contract) {
         if (!contractService.update(contract)) {
             throw new UpdateEntityException("Contract was not updated with id: " + contract.getId());
         }
     }
 
-    @GetMapping(GET_ALL_OPEN)
-    public List<Contract> getAllOpen() {
+    @GetMapping(GET_ALL_WITH_STATUS_OPEN)
+    public List<Contract> getAllStatusOpen() {
         return contractService.getAllByStatus(ContractStatusType.OPEN);
     }
 }
