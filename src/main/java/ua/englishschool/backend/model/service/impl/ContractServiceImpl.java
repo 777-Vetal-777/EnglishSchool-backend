@@ -3,10 +3,11 @@ package ua.englishschool.backend.model.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.englishschool.backend.entity.Contract;
+import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.model.repository.ContractRepository;
 import ua.englishschool.backend.model.service.ContractService;
 
-import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,5 +60,16 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public boolean isExists(long id) {
         return contractRepository.existsById(id);
+    }
+
+    @Override
+    public List<Contract> getAllByStatus(ContractStatusType statusType) {
+        return contractRepository.findAllByContractStatusType(statusType);
+
+    }
+
+    @Override
+    public List<Contract> getAllByCourseAndStatusType(Course course, ContractStatusType statusType) {
+        return contractRepository.findAllByCourseAndContractStatusType(course, statusType);
     }
 }

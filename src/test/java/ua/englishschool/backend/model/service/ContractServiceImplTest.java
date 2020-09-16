@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.englishschool.backend.entity.Contract;
+import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.model.repository.ContractRepository;
 import ua.englishschool.backend.model.service.impl.ContractServiceImpl;
 
@@ -32,12 +34,19 @@ public class ContractServiceImplTest {
 
     private static final long CONTRACT_ID = 1;
 
+    private static final long COURSE_ID = 2;
+
     private Contract contract;
+
+    private Course course;
 
     @BeforeEach
     void setUp() {
         contract = new Contract();
         contract.setId(CONTRACT_ID);
+
+        course = new Course();
+        course.setId(COURSE_ID);
     }
 
     @Test
@@ -94,7 +103,7 @@ public class ContractServiceImplTest {
     }
 
     @Test
-    void whenDelete_thenReturnTrue(){
+    void whenDelete_thenReturnTrue() {
         when(contractRepository.existsById(CONTRACT_ID)).thenReturn(true);
 
         boolean result = contractService.delete(CONTRACT_ID);
@@ -105,22 +114,43 @@ public class ContractServiceImplTest {
     }
 
     @Test
-    void whenDelete_thenReturnFalse(){
+    void whenDelete_thenReturnFalse() {
         when(contractRepository.existsById(CONTRACT_ID)).thenReturn(false);
 
         boolean result = contractService.delete(CONTRACT_ID);
 
         assertFalse(result);
         verify(contractRepository).existsById(CONTRACT_ID);
-        verify(contractRepository,never()).deleteById(CONTRACT_ID);
+        verify(contractRepository, never()).deleteById(CONTRACT_ID);
     }
 
     @Test
-    void whenExist_thenReturnTrue(){
+    void whenExist_thenReturnTrue() {
         when(contractRepository.existsById(CONTRACT_ID)).thenReturn(true);
 
         contractService.isExists(CONTRACT_ID);
 
         verify(contractRepository).existsById(CONTRACT_ID);
     }
+
+    @Test
+    void whenGetAllByStatus_thenReturnList() {
+        when(contractRepository.findAllByContractStatusType(ContractStatusType.OPEN)).thenReturn(Collections.singletonList(contract));
+
+        List<Contract> result = contractService.getAllByStatus(ContractStatusType.OPEN);
+
+        assertEquals(Collections.singletonList(contract), result);
+        verify(contractRepository).findAllByContractStatusType(ContractStatusType.OPEN);
+    }
+
+    @Test
+    void whenGetAllByStatusAndCourse_thenReturnList() {
+        when(contractRepository.findAllByCourseAndContractStatusType(course, ContractStatusType.OPEN)).thenReturn(Collections.singletonList(contract));
+
+        List<Contract> result = contractService.getAllByCourseAndStatusType(course, ContractStatusType.OPEN);
+
+        assertEquals(Collections.singletonList(contract), result);
+        verify(contractRepository).findAllByCourseAndContractStatusType(course, ContractStatusType.OPEN);
+    }
+
 }

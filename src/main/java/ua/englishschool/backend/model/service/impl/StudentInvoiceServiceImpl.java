@@ -1,17 +1,18 @@
 package ua.englishschool.backend.model.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.englishschool.backend.entity.StudentInvoice;
 import ua.englishschool.backend.model.repository.StudentInvoiceRepository;
 import ua.englishschool.backend.model.service.StudentInvoiceService;
 
-import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class StudentInvoiceServiceImpl implements StudentInvoiceService {
 
+    @Autowired
     private StudentInvoiceRepository studentInvoiceRepository;
 
     @Override

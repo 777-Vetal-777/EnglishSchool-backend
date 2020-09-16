@@ -1,16 +1,20 @@
 package ua.englishschool.backend.entity;
 
+import ua.englishschool.backend.entity.core.StudentInvoiceType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 public class StudentInvoice {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +27,13 @@ public class StudentInvoice {
     private Timestamp paymentDate;
 
     @Column
-    private Long money;
+    private int money;
 
     @Column
     private boolean payed;
+
+    @Column
+    private StudentInvoiceType type;
 
     public long getId() {
         return id;
@@ -52,11 +59,11 @@ public class StudentInvoice {
         this.paymentDate = paymentDate;
     }
 
-    public Long getMoney() {
+    public int getMoney() {
         return money;
     }
 
-    public void setMoney(Long money) {
+    public void setMoney(int money) {
         this.money = money;
     }
 
@@ -68,21 +75,30 @@ public class StudentInvoice {
         this.payed = payed;
     }
 
+    public StudentInvoiceType getType() {
+        return type;
+    }
+
+    public void setType(StudentInvoiceType type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudentInvoice that = (StudentInvoice) o;
         return id == that.id &&
+                money == that.money &&
                 payed == that.payed &&
                 Objects.equals(period, that.period) &&
                 Objects.equals(paymentDate, that.paymentDate) &&
-                Objects.equals(money, that.money);
+                type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, period, paymentDate, money, payed);
+        return Objects.hash(id, period, paymentDate, money, payed, type);
     }
 
     @Override
@@ -93,6 +109,7 @@ public class StudentInvoice {
                 ", paymentDate=" + paymentDate +
                 ", money=" + money +
                 ", payed=" + payed +
+                ", type=" + type +
                 '}';
     }
 }

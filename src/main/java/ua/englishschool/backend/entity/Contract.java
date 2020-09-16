@@ -34,16 +34,6 @@ public class Contract {
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "FK_courses_contracts"))
     private Course course;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id", foreignKey = @ForeignKey(name = "FK_teachers_contracts"))
-    private Teacher teacher;
-
-    @Column
-    private Period period;
-
-    @Column
-    private Long money;
-
     @Column
     @Enumerated(EnumType.STRING)
     private ContractStatusType contractStatusType;
@@ -76,30 +66,6 @@ public class Contract {
         this.course = course;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
-    public Period getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(Period period) {
-        this.period = period;
-    }
-
-    public Long getMoney() {
-        return money;
-    }
-
-    public void setMoney(Long money) {
-        this.money = money;
-    }
-
     public ContractStatusType getContractStatusType() {
         return contractStatusType;
     }
@@ -124,16 +90,13 @@ public class Contract {
         return id == contract.id &&
                 Objects.equals(student, contract.student) &&
                 Objects.equals(course, contract.course) &&
-                Objects.equals(teacher, contract.teacher) &&
-                Objects.equals(period, contract.period) &&
-                Objects.equals(money, contract.money) &&
                 contractStatusType == contract.contractStatusType &&
                 Objects.equals(studentInvoices, contract.studentInvoices);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, student, course, teacher, period, money, contractStatusType, studentInvoices);
+        return Objects.hash(id, student, course, contractStatusType, studentInvoices);
     }
 
     @Override
@@ -142,9 +105,6 @@ public class Contract {
                 "id=" + id +
                 ", student=" + student +
                 ", course=" + course +
-                ", teacher=" + teacher +
-                ", period=" + period +
-                ", money=" + money +
                 ", contractStatusType=" + contractStatusType +
                 ", studentInvoices=" + studentInvoices +
                 '}';

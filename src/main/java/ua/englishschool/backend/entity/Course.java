@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -23,15 +23,15 @@ public class Course {
     @Column
     private Period period;
 
-    @OneToOne
-    @JoinColumn(name = "teacher_id", foreignKey = @ForeignKey(name = "FK_teacher_course"))
+    @ManyToOne
+    @JoinColumn(name = "teacher_id", foreignKey = @ForeignKey(name = "FK_teachers_courses"))
     private Teacher teacher;
 
     @Column
-    private Long amount;
+    private int price;
 
-    @Column(name = "teacher_share")
-    private Long teacherShare;
+    @Column
+    private int maxCapacity;
 
     public long getId() {
         return id;
@@ -65,20 +65,20 @@ public class Course {
         this.teacher = teacher;
     }
 
-    public Long getAmount() {
-        return amount;
+    public int getPrice() {
+        return price;
     }
 
-    public void setAmount(Long amount) {
-        this.amount = amount;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
-    public Long getTeacherShare() {
-        return teacherShare;
+    public int getMaxCapacity() {
+        return maxCapacity;
     }
 
-    public void setTeacherShare(Long teacherShare) {
-        this.teacherShare = teacherShare;
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 
     @Override
@@ -87,16 +87,16 @@ public class Course {
         if (o == null || getClass() != o.getClass()) return false;
         Course course = (Course) o;
         return id == course.id &&
+                price == course.price &&
+                maxCapacity == course.maxCapacity &&
                 Objects.equals(name, course.name) &&
                 Objects.equals(period, course.period) &&
-                Objects.equals(teacher, course.teacher) &&
-                Objects.equals(amount, course.amount) &&
-                Objects.equals(teacherShare, course.teacherShare);
+                Objects.equals(teacher, course.teacher);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, period, teacher, amount, teacherShare);
+        return Objects.hash(id, name, period, teacher, price, maxCapacity);
     }
 
     @Override
@@ -106,8 +106,8 @@ public class Course {
                 ", name='" + name + '\'' +
                 ", period=" + period +
                 ", teacher=" + teacher +
-                ", amount=" + amount +
-                ", teacherShare=" + teacherShare +
+                ", price=" + price +
+                ", maxCapacity=" + maxCapacity +
                 '}';
     }
 }

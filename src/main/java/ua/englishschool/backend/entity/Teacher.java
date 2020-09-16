@@ -13,14 +13,14 @@ import java.util.Objects;
 public class Teacher extends User {
 
     @Column
-    private long maxStudents;
+    private int salary;
 
-    public long getMaxStudents() {
-        return maxStudents;
+    public int getSalary() {
+        return salary;
     }
 
-    public void setMaxStudents(long maxStudents) {
-        this.maxStudents = maxStudents;
+    public void setSalary(int salary) {
+        this.salary = salary;
     }
 
     @Override
@@ -29,18 +29,18 @@ public class Teacher extends User {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Teacher teacher = (Teacher) o;
-        return maxStudents == teacher.maxStudents;
+        return salary == teacher.salary;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), maxStudents);
+        return Objects.hash(super.hashCode(), salary);
     }
 
     @Override
     public String toString() {
         return "Teacher{" +
-                "maxStudents=" + maxStudents +
+                "salary=" + salary +
                 "} " + super.toString();
     }
 }
