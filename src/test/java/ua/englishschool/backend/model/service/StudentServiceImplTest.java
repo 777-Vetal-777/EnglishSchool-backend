@@ -10,12 +10,14 @@ import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.model.repository.StudentRepository;
 import ua.englishschool.backend.model.service.impl.StudentServiceImpl;
 
+import javax.persistence.EntityExistsException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -48,10 +50,23 @@ public class StudentServiceImplTest {
     void whenCreate_thenReturnStudent() {
         student.setId(0);
         when(studentRepository.saveAndFlush(student)).thenReturn(student);
+        when(studentRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.empty());
 
         studentService.create(student);
 
         verify(studentRepository).saveAndFlush(student);
+
+    }
+
+    @Test
+    void whenCreate_thenThrowException() {
+
+        when(studentRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.ofNullable(student));
+
+        assertThrows(EntityExistsException.class,
+                () -> {
+                    studentService.create(student);
+                });
 
     }
 

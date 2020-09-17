@@ -6,6 +6,7 @@ import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.model.repository.StudentRepository;
 import ua.englishschool.backend.model.service.StudentService;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student create(Student student) {
+        if (findStudentByPhone(student.getPhoneNumber()).isPresent()) {
+            throw new EntityExistsException("Student with this phone is already in database: " + student.toString());
+        }
         if (student.getId() == 0) {
             return studentRepository.saveAndFlush(student);
         }
