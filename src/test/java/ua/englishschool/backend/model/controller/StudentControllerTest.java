@@ -37,6 +37,8 @@ public class StudentControllerTest {
 
     private static final String URL_FIND_ACTIVE_STUDENT_DTO = URL + "/active-students-dto";
 
+    private static final String URL_GET_ALL_STUDENTS_DTO = URL + "/get-all-dto";
+
     private static final long STUDENT_ID = 1;
 
     private static final String PHONE = "7777777777";
@@ -201,7 +203,17 @@ public class StudentControllerTest {
         verify(studentService).findActiveStudentsDto();
     }
 
+    @Test
+    void findAllStudentsDto_ReturnListStudents() throws Exception {
+        when(studentService.findAllStudentsDto()).thenReturn(Collections.singletonList(studentDto));
 
+        server.perform(get(URL_GET_ALL_STUDENTS_DTO))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(Collections.singletonList(studentDto))))
+                .andExpect(status().isOk());
+
+        verify(studentService).findAllStudentsDto();
+    }
 
 
     private String asJsonString(final Object obj) {

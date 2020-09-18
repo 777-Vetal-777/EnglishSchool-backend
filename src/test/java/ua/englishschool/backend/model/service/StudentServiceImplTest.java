@@ -16,6 +16,7 @@ import ua.englishschool.backend.model.service.impl.StudentServiceImpl;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -231,5 +232,28 @@ public class StudentServiceImplTest {
         assertEquals(Collections.emptyList(), result);
     }
 
+    @Test
+    void whenFindAllByActiveFalseDto_thenReturnListStudents() {
+        studentDto.setCourseName(null);
+        when(studentRepository.findAllByActive(false)).thenReturn(Collections.singletonList(student));
+
+        List<StudentDto> result = studentService.findAllByActiveFalseDto();
+
+        assertEquals(Collections.singletonList(studentDto), result);
+    }
+
+    @Test
+    void whenFindAllStudentsDto_thenReturnListStudents() {
+        StudentDto studentDto1 = new StudentDto();
+        studentDto1.setFirstName(student.getFirstName());
+        studentDto1.setLastName(student.getLastName());
+        studentDto1.setPhoneNumber(student.getPhoneNumber());
+        when(studentRepository.findAllByActive(false)).thenReturn(Collections.singletonList(student));
+        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.singletonList(contract));
+
+        List<StudentDto> result = studentService.findAllStudentsDto();
+
+        assertEquals(Arrays.asList(studentDto,studentDto1),result);
+    }
 
 }

@@ -83,10 +83,10 @@ public class StudentServiceImpl implements StudentService {
         }
         Optional<Contract> contract = contractService.findContractByStudentAndContractStatusType(student.get(), ContractStatusType.OPEN);
         if (contract.isEmpty()) {
-            return Optional.ofNullable(new StudentDto(student.get().getFirstName(), student.get().getLastName(), student.get().getPhoneNumber(), null));
+            return Optional.of(new StudentDto(student.get().getFirstName(), student.get().getLastName(), student.get().getPhoneNumber(), null));
         }
 
-        return Optional.ofNullable(new StudentDto(student.get().getFirstName(), student.get().getLastName(),
+        return Optional.of(new StudentDto(student.get().getFirstName(), student.get().getLastName(),
                 student.get().getPhoneNumber(), contract.get().getCourse().getName()));
     }
 
@@ -100,4 +100,20 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<StudentDto> findAllStudentsDto() {
+        List<StudentDto> list = contractService.getAllByStatus(ContractStatusType.OPEN).stream()
+                .map(contract -> new StudentDto(contract.getStudent().getFirstName(), contract.getStudent().getLastName(),
+                        contract.getStudent().getPhoneNumber(), contract.getCourse().getName()))
+                .collect(Collectors.toList());
+        list.addAll(findAllByActiveFalseDto());
+        return list;
+    }
+
+    @Override
+    public List<StudentDto> findAllByActiveFalseDto() {
+        return studentRepository.findAllByActive(false).stream()
+                .map(student -> new StudentDto(student.getFirstName(), student.getLastName(), student.getPhoneNumber(), null))
+                .collect(Collectors.toList());
+    }
 }

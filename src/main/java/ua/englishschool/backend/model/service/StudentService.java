@@ -14,4 +14,8 @@ public interface StudentService extends GenericService<Student> {
 
     List<StudentDto> findActiveStudentsDto();
 
+    List<StudentDto> findAllStudentsDto();
+
+    List<StudentDto> findAllByActiveFalseDto();
+
 }

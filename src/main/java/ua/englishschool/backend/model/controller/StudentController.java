@@ -29,6 +29,8 @@ public class StudentController {
 
     private static final String URL_DELETE_BY_ID = URL + "/{id}";
 
+    private static final String URL_GET_ALL_STUDENTS_DTO = URL + "/get-all-dto";
+
     private static final String URL_FIND_ACTIVE_STUDENT_DTO = URL + "/active-students-dto";
 
     @Autowired
@@ -75,5 +77,10 @@ public class StudentController {
     @GetMapping(URL_FIND_ACTIVE_STUDENT_DTO)
     public List<StudentDto> findActiveStudentsDto() {
         return studentService.findActiveStudentsDto();
+    }
+
+    @GetMapping(URL_GET_ALL_STUDENTS_DTO)
+    public List<StudentDto> findAllStudentsDto() {
+        return studentService.findAllStudentsDto();
     }
 }
