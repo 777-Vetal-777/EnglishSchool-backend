@@ -195,7 +195,7 @@ public class StudentServiceImplTest {
         when(studentRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.ofNullable(student));
         when(contractService.findContractByStudentAndContractStatusType(student, ContractStatusType.OPEN)).thenReturn(Optional.ofNullable(contract));
 
-        Optional<StudentDto> result = studentService.findStudentByPhoneDto(PHONE);
+        Optional<StudentDto> result = studentService.findStudentDtoByPhone(PHONE);
 
         assertEquals(studentDto, result.get());
         verify(studentRepository).findByPhoneNumber(PHONE);
@@ -208,7 +208,7 @@ public class StudentServiceImplTest {
 
         assertThrows(EntityNotFoundException.class,
                 () -> {
-                    studentService.findStudentByPhoneDto(PHONE);
+                    studentService.findStudentDtoByPhone(PHONE);
                 });
 
     }
@@ -217,7 +217,7 @@ public class StudentServiceImplTest {
     void whenFindActiveStudents_thenReturnListStudentsDto() {
         when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.singletonList(contract));
 
-        List<StudentDto> result = studentService.findActiveStudents();
+        List<StudentDto> result = studentService.findActiveStudentsDto();
 
         assertEquals(Collections.singletonList(studentDto), result);
     }
@@ -226,7 +226,7 @@ public class StudentServiceImplTest {
     void whenFindActiveStudents_thenReturnListEmpty() {
         when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.emptyList());
 
-        List<StudentDto> result = studentService.findActiveStudents();
+        List<StudentDto> result = studentService.findActiveStudentsDto();
 
         assertEquals(Collections.emptyList(), result);
     }

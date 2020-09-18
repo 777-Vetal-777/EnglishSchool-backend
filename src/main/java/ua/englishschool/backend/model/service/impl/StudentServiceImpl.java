@@ -76,7 +76,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
 
-    public Optional<StudentDto> findStudentByPhoneDto(String phone) {
+    public Optional<StudentDto> findStudentDtoByPhone(String phone) {
         Optional<Student> student = studentRepository.findByPhoneNumber(phone);
         if (student.isEmpty()) {
             throw new EntityNotFoundException("Student was not found with this phone");
@@ -92,7 +92,7 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public List<StudentDto> findActiveStudents() {
+    public List<StudentDto> findActiveStudentsDto() {
 
         return contractService.getAllByStatus(ContractStatusType.OPEN).stream()
                 .map(contract -> new StudentDto(contract.getStudent().getFirstName(), contract.getStudent().getLastName(),

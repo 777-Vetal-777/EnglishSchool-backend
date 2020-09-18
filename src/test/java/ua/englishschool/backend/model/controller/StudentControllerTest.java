@@ -33,13 +33,13 @@ public class StudentControllerTest {
 
     private static final String URL = "/students";
 
-    private static final String GET_BY_PHONE = URL + "/phone/{phone}";
+    private static final String URL_GET_STUDENT_DTO_BY_PHONE = URL + "/dto/{phone}";
+
+    private static final String URL_FIND_ACTIVE_STUDENT_DTO = URL + "/active-students-dto";
 
     private static final long STUDENT_ID = 1;
 
     private static final String PHONE = "7777777777";
-
-    private static final String URL_FIND_ACTIVE_STUDENT = URL + "/active-students";
 
     @Autowired
     private MockMvc server;
@@ -167,38 +167,38 @@ public class StudentControllerTest {
 
     @Test
     void getStudentByPhone_ReturnStudentDto() throws Exception {
-        when(studentService.findStudentByPhoneDto(PHONE)).thenReturn(Optional.ofNullable(studentDto));
+        when(studentService.findStudentDtoByPhone(PHONE)).thenReturn(Optional.ofNullable(studentDto));
 
-        server.perform(get(GET_BY_PHONE, PHONE))
+        server.perform(get(URL_GET_STUDENT_DTO_BY_PHONE, PHONE))
                 .andDo(print())
                 .andExpect(content().json(asJsonString(studentDto)))
                 .andExpect(status().isOk());
 
-        verify(studentService).findStudentByPhoneDto(PHONE);
+        verify(studentService).findStudentDtoByPhone(PHONE);
     }
 
     @Test
     void getStudentByPhone_IfNotFoundStudent() throws Exception {
-        when(studentService.findStudentByPhoneDto(PHONE)).thenReturn(Optional.empty());
+        when(studentService.findStudentDtoByPhone(PHONE)).thenReturn(Optional.empty());
 
-        server.perform(get(GET_BY_PHONE, PHONE))
+        server.perform(get(URL_GET_STUDENT_DTO_BY_PHONE, PHONE))
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        verify(studentService).findStudentByPhoneDto(PHONE);
+        verify(studentService).findStudentDtoByPhone(PHONE);
 
     }
 
     @Test
     void findActiveStudents_ReturnListStudents() throws Exception {
-        when(studentService.findActiveStudents()).thenReturn(Collections.singletonList(studentDto));
+        when(studentService.findActiveStudentsDto()).thenReturn(Collections.singletonList(studentDto));
 
-        server.perform(get(URL_FIND_ACTIVE_STUDENT))
+        server.perform(get(URL_FIND_ACTIVE_STUDENT_DTO))
                 .andDo(print())
                 .andExpect(content().json(asJsonString(Collections.singletonList(studentDto))))
                 .andExpect(status().isOk());
 
-        verify(studentService).findActiveStudents();
+        verify(studentService).findActiveStudentsDto();
     }
 
 

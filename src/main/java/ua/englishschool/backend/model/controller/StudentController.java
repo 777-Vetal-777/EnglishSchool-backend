@@ -23,13 +23,13 @@ public class StudentController {
 
     private static final String URL = "/students";
 
-    private static final String URL_GET_BY_PHONE = URL + "/phone/{phone}";
+    private static final String URL_GET_STUDENT_DTO_BY_PHONE = URL + "/dto/{phone}";
 
     private static final String URL_GET_BY_ID = URL + "/{id}";
 
     private static final String URL_DELETE_BY_ID = URL + "/{id}";
 
-    private static final String URL_FIND_ACTIVE_STUDENT = URL + "/active-students";
+    private static final String URL_FIND_ACTIVE_STUDENT_DTO = URL + "/active-students-dto";
 
     @Autowired
     private StudentService studentService;
@@ -66,14 +66,14 @@ public class StudentController {
         return studentService.getAll();
     }
 
-    @GetMapping(URL_GET_BY_PHONE)
-    public StudentDto getByPhone(@PathVariable("phone") String phone) {
-        return studentService.findStudentByPhoneDto(phone)
+    @GetMapping(URL_GET_STUDENT_DTO_BY_PHONE)
+    public StudentDto getStudentDtoByPhone(@PathVariable("phone") String phone) {
+        return studentService.findStudentDtoByPhone(phone)
                 .orElseThrow(() -> new EntityNotFoundException("Student was not found with phone: " + phone));
     }
 
-    @GetMapping(URL_FIND_ACTIVE_STUDENT)
-    public List<StudentDto> findActiveStudents() {
-        return studentService.findActiveStudents();
+    @GetMapping(URL_FIND_ACTIVE_STUDENT_DTO)
+    public List<StudentDto> findActiveStudentsDto() {
+        return studentService.findActiveStudentsDto();
     }
 }

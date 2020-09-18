@@ -10,8 +10,8 @@ public interface StudentService extends GenericService<Student> {
 
     Optional<Student> findStudentByPhone(String phone);
 
-    Optional<StudentDto> findStudentByPhoneDto(String phone);
+    Optional<StudentDto> findStudentDtoByPhone(String phone);
 
-    List<StudentDto> findActiveStudents();
+    List<StudentDto> findActiveStudentsDto();
 
 }
