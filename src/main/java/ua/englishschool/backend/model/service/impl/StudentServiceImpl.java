@@ -2,19 +2,28 @@ package ua.englishschool.backend.model.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Student;
+import ua.englishschool.backend.entity.core.ContractStatusType;
+import ua.englishschool.backend.entity.dto.StudentDto;
 import ua.englishschool.backend.model.repository.StudentRepository;
+import ua.englishschool.backend.model.service.ContractService;
 import ua.englishschool.backend.model.service.StudentService;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private ContractService contractService;
 
 
     @Override
@@ -65,4 +74,30 @@ public class StudentServiceImpl implements StudentService {
     public Optional<Student> findStudentByPhone(String phone) {
         return studentRepository.findByPhoneNumber(phone);
     }
+
+
+    public Optional<StudentDto> findStudentByPhoneDto(String phone) {
+        Optional<Student> student = studentRepository.findByPhoneNumber(phone);
+        if (student.isEmpty()) {
+            throw new EntityNotFoundException("Student was not found with this phone");
+        }
+        Optional<Contract> contract = contractService.findContractByStudentAndContractStatusType(student.get(), ContractStatusType.OPEN);
+        if (contract.isEmpty()) {
+            return Optional.ofNullable(new StudentDto(student.get().getFirstName(), student.get().getLastName(), student.get().getPhoneNumber(), null));
+        }
+
+        return Optional.ofNullable(new StudentDto(student.get().getFirstName(), student.get().getLastName(),
+                student.get().getPhoneNumber(), contract.get().getCourse().getName()));
+    }
+
+
+    @Override
+    public List<StudentDto> findActiveStudents() {
+
+        return contractService.getAllByStatus(ContractStatusType.OPEN).stream()
+                .map(contract -> new StudentDto(contract.getStudent().getFirstName(), contract.getStudent().getLastName(),
+                        contract.getStudent().getPhoneNumber(), contract.getCourse().getName()))
+                .collect(Collectors.toList());
+    }
+
 }

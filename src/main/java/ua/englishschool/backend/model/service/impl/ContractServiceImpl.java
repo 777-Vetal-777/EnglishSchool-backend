@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.model.repository.ContractRepository;
 import ua.englishschool.backend.model.service.ContractService;
@@ -71,5 +72,10 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<Contract> getAllByCourseAndStatusType(Course course, ContractStatusType statusType) {
         return contractRepository.findAllByCourseAndContractStatusType(course, statusType);
+    }
+
+    @Override
+    public Optional<Contract> findContractByStudentAndContractStatusType(Student student, ContractStatusType contractStatusType) {
+        return contractRepository.findContractByStudentAndContractStatusType(student, contractStatusType);
     }
 }

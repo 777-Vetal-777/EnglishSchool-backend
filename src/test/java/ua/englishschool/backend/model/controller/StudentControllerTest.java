@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.englishschool.backend.entity.Student;
+import ua.englishschool.backend.entity.dto.StudentDto;
 import ua.englishschool.backend.model.service.StudentService;
 
 import java.util.Collections;
@@ -38,6 +39,8 @@ public class StudentControllerTest {
 
     private static final String PHONE = "7777777777";
 
+    private static final String URL_FIND_ACTIVE_STUDENT = URL + "/active-students";
+
     @Autowired
     private MockMvc server;
 
@@ -46,18 +49,21 @@ public class StudentControllerTest {
 
     private Student student;
 
-    private Student student2;
+    private StudentDto studentDto;
+
 
     @BeforeEach
     void setUp() {
         student = new Student();
         student.setId(STUDENT_ID);
-        student.setFirstName("AAA");
+        student.setFirstName("firstName");
         student.setLastName("BBB");
-        student.setAddress("CCC");
+        student.setAddress("lastName");
         student.setPhoneNumber(PHONE);
 
-
+        studentDto = new StudentDto();
+        studentDto.setFirstName("firstName");
+        studentDto.setLastName("lastName");
     }
 
     @Test
@@ -160,28 +166,42 @@ public class StudentControllerTest {
     }
 
     @Test
-    void getStudentByPhone_ReturnStudent() throws Exception {
-        when(studentService.findStudentByPhone(PHONE)).thenReturn(Optional.ofNullable(student));
+    void getStudentByPhone_ReturnStudentDto() throws Exception {
+        when(studentService.findStudentByPhoneDto(PHONE)).thenReturn(Optional.ofNullable(studentDto));
 
         server.perform(get(GET_BY_PHONE, PHONE))
                 .andDo(print())
-                .andExpect(content().json(asJsonString(student)))
+                .andExpect(content().json(asJsonString(studentDto)))
                 .andExpect(status().isOk());
 
-        verify(studentService).findStudentByPhone(PHONE);
+        verify(studentService).findStudentByPhoneDto(PHONE);
     }
 
     @Test
     void getStudentByPhone_IfNotFoundStudent() throws Exception {
-        when(studentService.findStudentByPhone(PHONE)).thenReturn(Optional.empty());
+        when(studentService.findStudentByPhoneDto(PHONE)).thenReturn(Optional.empty());
 
         server.perform(get(GET_BY_PHONE, PHONE))
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        verify(studentService).findStudentByPhone(PHONE);
+        verify(studentService).findStudentByPhoneDto(PHONE);
 
     }
+
+    @Test
+    void findActiveStudents_ReturnListStudents() throws Exception {
+        when(studentService.findActiveStudents()).thenReturn(Collections.singletonList(studentDto));
+
+        server.perform(get(URL_FIND_ACTIVE_STUDENT))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(Collections.singletonList(studentDto))))
+                .andExpect(status().isOk());
+
+        verify(studentService).findActiveStudents();
+    }
+
+
 
 
     private String asJsonString(final Object obj) {

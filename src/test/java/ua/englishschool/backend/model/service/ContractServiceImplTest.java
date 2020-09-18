@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.model.repository.ContractRepository;
 import ua.englishschool.backend.model.service.impl.ContractServiceImpl;
@@ -36,9 +37,13 @@ public class ContractServiceImplTest {
 
     private static final long COURSE_ID = 2;
 
+    private static final long STUDENT_ID = 3;
+
     private Contract contract;
 
     private Course course;
+
+    private Student student;
 
     @BeforeEach
     void setUp() {
@@ -47,6 +52,9 @@ public class ContractServiceImplTest {
 
         course = new Course();
         course.setId(COURSE_ID);
+
+        student = new Student();
+        student.setId(STUDENT_ID);
     }
 
     @Test
@@ -151,6 +159,15 @@ public class ContractServiceImplTest {
 
         assertEquals(Collections.singletonList(contract), result);
         verify(contractRepository).findAllByCourseAndContractStatusType(course, ContractStatusType.OPEN);
+    }
+
+    @Test
+    void whenFindByStudentAndStatus_thenReturnContract() {
+        when(contractRepository.findContractByStudentAndContractStatusType(student, ContractStatusType.OPEN)).thenReturn(Optional.ofNullable(contract));
+
+        Optional<Contract> result = contractService.findContractByStudentAndContractStatusType(student, ContractStatusType.OPEN);
+
+        assertEquals(contract, result.get());
     }
 
 }

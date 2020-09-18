@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.englishschool.backend.entity.Student;
+import ua.englishschool.backend.entity.dto.StudentDto;
 import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.service.StudentService;
 
@@ -22,11 +23,13 @@ public class StudentController {
 
     private static final String URL = "/students";
 
-    private static final String GET_BY_PHONE = URL + "/phone/{phone}";
+    private static final String URL_GET_BY_PHONE = URL + "/phone/{phone}";
 
-    private static final String GET_BY_ID = URL + "/{id}";
+    private static final String URL_GET_BY_ID = URL + "/{id}";
 
-    private static final String DELETE_BY_ID = URL + "/{id}";
+    private static final String URL_DELETE_BY_ID = URL + "/{id}";
+
+    private static final String URL_FIND_ACTIVE_STUDENT = URL + "/active-students";
 
     @Autowired
     private StudentService studentService;
@@ -38,7 +41,7 @@ public class StudentController {
         return studentService.create(student).getId();
     }
 
-    @DeleteMapping(DELETE_BY_ID)
+    @DeleteMapping(URL_DELETE_BY_ID)
     public void deleteById(@PathVariable long id) {
         if (!studentService.delete(id)) {
             throw new EntityNotFoundException("Delete was failed for StudentId: " + id);
@@ -53,7 +56,7 @@ public class StudentController {
         }
     }
 
-    @GetMapping(GET_BY_ID)
+    @GetMapping(URL_GET_BY_ID)
     public Student getById(@PathVariable("id") long id) {
         return studentService.getById(id).orElseThrow(() -> new EntityNotFoundException("Student was not found with id: " + id));
     }
@@ -63,9 +66,14 @@ public class StudentController {
         return studentService.getAll();
     }
 
-    @GetMapping(GET_BY_PHONE)
-    public Student getByPhone(@PathVariable("phone") String phone) {
-        return studentService.findStudentByPhone(phone)
+    @GetMapping(URL_GET_BY_PHONE)
+    public StudentDto getByPhone(@PathVariable("phone") String phone) {
+        return studentService.findStudentByPhoneDto(phone)
                 .orElseThrow(() -> new EntityNotFoundException("Student was not found with phone: " + phone));
+    }
+
+    @GetMapping(URL_FIND_ACTIVE_STUDENT)
+    public List<StudentDto> findActiveStudents() {
+        return studentService.findActiveStudents();
     }
 }

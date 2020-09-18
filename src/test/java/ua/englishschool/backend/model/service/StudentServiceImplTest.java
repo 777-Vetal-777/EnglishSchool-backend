@@ -6,11 +6,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ua.englishschool.backend.entity.Contract;
+import ua.englishschool.backend.entity.Course;
 import ua.englishschool.backend.entity.Student;
+import ua.englishschool.backend.entity.core.ContractStatusType;
+import ua.englishschool.backend.entity.dto.StudentDto;
 import ua.englishschool.backend.model.repository.StudentRepository;
 import ua.englishschool.backend.model.service.impl.StudentServiceImpl;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +33,10 @@ public class StudentServiceImplTest {
 
     private static final long STUDENT_ID = 1;
 
+    private static final long CONTRACT_ID = 2;
+
+    private static final long COURSE_ID = 3;
+
     private static final String PHONE = "777777777";
 
     @InjectMocks
@@ -36,14 +45,42 @@ public class StudentServiceImplTest {
     @Mock
     private StudentRepository studentRepository;
 
+    @Mock
+    private ContractService contractService;
+
     private Student student;
+
+    private Contract contract;
+
+    private Course course;
+
+    private StudentDto studentDto;
+
 
     @BeforeEach
     void setUp() {
         student = new Student();
         student.setId(STUDENT_ID);
-        student.setFirstName("Vitaliy");
+        student.setFirstName("firstName");
+        student.setLastName("lastName");
         student.setPhoneNumber(PHONE);
+
+        course = new Course();
+        course.setId(COURSE_ID);
+        course.setName("Course");
+
+        contract = new Contract();
+        contract.setId(CONTRACT_ID);
+        contract.setStudent(student);
+        contract.setCourse(course);
+
+        studentDto = new StudentDto();
+        studentDto.setFirstName(student.getFirstName());
+        studentDto.setLastName(student.getLastName());
+        studentDto.setPhoneNumber(student.getPhoneNumber());
+        studentDto.setCourseName(course.getName());
+
+
     }
 
     @Test
@@ -152,5 +189,47 @@ public class StudentServiceImplTest {
         assertEquals(student, result.get());
         verify(studentRepository).findByPhoneNumber(PHONE);
     }
+
+    @Test
+    void whenFindStudentByPhoneDto_thenReturnStudentDto() {
+        when(studentRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.ofNullable(student));
+        when(contractService.findContractByStudentAndContractStatusType(student, ContractStatusType.OPEN)).thenReturn(Optional.ofNullable(contract));
+
+        Optional<StudentDto> result = studentService.findStudentByPhoneDto(PHONE);
+
+        assertEquals(studentDto, result.get());
+        verify(studentRepository).findByPhoneNumber(PHONE);
+        verify(contractService).findContractByStudentAndContractStatusType(student, ContractStatusType.OPEN);
+    }
+
+    @Test
+    void whenFindStudentByPhoneDto_thenTrowException() {
+        when(studentRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> {
+                    studentService.findStudentByPhoneDto(PHONE);
+                });
+
+    }
+
+    @Test
+    void whenFindActiveStudents_thenReturnListStudentsDto() {
+        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.singletonList(contract));
+
+        List<StudentDto> result = studentService.findActiveStudents();
+
+        assertEquals(Collections.singletonList(studentDto), result);
+    }
+
+    @Test
+    void whenFindActiveStudents_thenReturnListEmpty() {
+        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.emptyList());
+
+        List<StudentDto> result = studentService.findActiveStudents();
+
+        assertEquals(Collections.emptyList(), result);
+    }
+
 
 }
