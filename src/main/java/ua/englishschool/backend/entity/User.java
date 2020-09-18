@@ -27,9 +27,6 @@ public abstract class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(unique = true)
-    private String email;
-
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
@@ -61,13 +58,6 @@ public abstract class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -93,14 +83,13 @@ public abstract class User {
         return id == user.id &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
-                Objects.equals(email, user.email) &&
                 Objects.equals(phoneNumber, user.phoneNumber) &&
                 role == user.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, phoneNumber, role);
+        return Objects.hash(id, firstName, lastName, phoneNumber, role);
     }
 
     @Override
@@ -109,7 +98,6 @@ public abstract class User {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role=" + role +
                 '}';
