@@ -83,7 +83,7 @@ public class ContractRepositoryTest {
 
     @Test
     void whenFindCountByStatusOpenAndCourse_thenReturnCount2() {
-        int count = contractRepository.findCountByStatusOpenAndCourse(course);
+        int count = contractRepository.findCountByCourseAndStatus(course, ContractStatusType.OPEN);
         assertEquals(2, count);
     }
 
@@ -91,7 +91,7 @@ public class ContractRepositoryTest {
     void whenFindCountByStatusOpenAndCourse_thenReturnCount1() {
         contract2.setContractStatusType(ContractStatusType.CLOSED);
         entityManager.merge(contract2);
-        int count = contractRepository.findCountByStatusOpenAndCourse(course);
+        int count = contractRepository.findCountByCourseAndStatus(course, ContractStatusType.OPEN);
         assertEquals(1, count);
     }
 

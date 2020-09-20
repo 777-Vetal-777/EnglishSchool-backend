@@ -42,6 +42,8 @@ public class CourseControllerTest {
 
     private static final String URL_GET_ALL_ACTIVE_DTO = URL + "/get-all/active/dto";
 
+    private static final String URL_GET_ALL_WAIT_DTO = URL + "/get-all/wait/dto";
+
 
     @Autowired
     private MockMvc server;
@@ -95,6 +97,16 @@ public class CourseControllerTest {
         server.perform(get(URL_GET_ALL_ACTIVE_DTO))
                 .andDo(print())
                 .andExpect(content().json(asJsonString(courseDtoSet)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void whenGetAllWaitDto_ReturnListCoursesDto() throws Exception {
+        when(courseService.getAllWaitCourses()).thenReturn(Collections.singletonList(courseDto));
+
+        server.perform(get(URL_GET_ALL_WAIT_DTO))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(Collections.singletonList(courseDto))))
                 .andExpect(status().isOk());
     }
 

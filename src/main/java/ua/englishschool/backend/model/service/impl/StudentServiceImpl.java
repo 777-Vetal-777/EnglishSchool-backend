@@ -102,9 +102,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDto> findAllStudentsDto() {
-        List<StudentDto> list = contractService.getAllByStatus(ContractStatusType.OPEN).stream()
-                .map(contract -> new StudentDto(contract.getStudent().getFirstName(), contract.getStudent().getLastName(),
-                        contract.getStudent().getPhoneNumber(), contract.getCourse().getName()))
+        List<StudentDto> list = studentRepository.findAllByActive(true).stream()
+                .map(student -> new StudentDto(student.getFirstName(), student.getLastName(),
+                        student.getPhoneNumber(),
+                        contractService.findByStudentAndStatusOpenOrWait(student).get().getCourse().getName()))
                 .collect(Collectors.toList());
         list.addAll(findAllByActiveFalseDto());
         return list;

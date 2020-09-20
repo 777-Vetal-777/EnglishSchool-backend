@@ -10,8 +10,16 @@ public class CourseDto {
 
     private int availableStudents;
 
+    public CourseDto(Course course, int availableStudents) {
+        this.course = course;
+        this.availableStudents = availableStudents;
+    }
+
     public Course getCourse() {
         return course;
+    }
+
+    public CourseDto() {
     }
 
     public void setCourse(Course course) {
@@ -25,6 +33,7 @@ public class CourseDto {
     public void setAvailableStudents(int availableStudents) {
         this.availableStudents = availableStudents;
     }
+
 
     @Override
     public boolean equals(Object o) {

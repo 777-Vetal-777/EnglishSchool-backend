@@ -14,6 +14,7 @@ import ua.englishschool.backend.entity.dto.CourseDto;
 import ua.englishschool.backend.model.repository.CourseRepository;
 import ua.englishschool.backend.model.service.impl.CourseServiceImpl;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -206,5 +207,16 @@ public class CourseServiceImplTest {
 
         assertEquals(courseDtoSet, result);
 
+    }
+
+    @Test
+    void whenGetAllWaitCourses_thenReturnListCoursesDto() {
+        when(courseRepository.findAllByStartDateAfter(LocalDate.now())).thenReturn(Arrays.asList(course, course2));
+        when(contractService.findCountByCourseAndStatus(course, ContractStatusType.WAIT)).thenReturn(3);
+        when(contractService.findCountByCourseAndStatus(course2, ContractStatusType.WAIT)).thenReturn(3);
+
+        List<CourseDto> courseDtoList = courseService.getAllWaitCourses();
+
+        assertEquals(Arrays.asList(courseDto, courseDto2), courseDtoList);
     }
 }

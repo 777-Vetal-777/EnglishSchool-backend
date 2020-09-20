@@ -51,7 +51,11 @@ public class StudentServiceImplTest {
 
     private Student student;
 
+    private Student student2;
+
     private Contract contract;
+
+    private Contract contract2;
 
     private Course course;
 
@@ -65,6 +69,11 @@ public class StudentServiceImplTest {
         student.setFirstName("firstName");
         student.setLastName("lastName");
         student.setPhoneNumber(PHONE);
+        student.setActive(true);
+
+        student2 = new Student();
+        student2.setId(5);
+        student2.setFirstName("firstName2");
 
         course = new Course();
         course.setId(COURSE_ID);
@@ -74,6 +83,9 @@ public class StudentServiceImplTest {
         contract.setId(CONTRACT_ID);
         contract.setStudent(student);
         contract.setCourse(course);
+
+        contract2 = new Contract();
+        contract2.setStudent(student2);
 
         studentDto = new StudentDto();
         studentDto.setFirstName(student.getFirstName());
@@ -244,16 +256,15 @@ public class StudentServiceImplTest {
 
     @Test
     void whenFindAllStudentsDto_thenReturnListStudents() {
-        StudentDto studentDto1 = new StudentDto();
-        studentDto1.setFirstName(student.getFirstName());
-        studentDto1.setLastName(student.getLastName());
-        studentDto1.setPhoneNumber(student.getPhoneNumber());
-        when(studentRepository.findAllByActive(false)).thenReturn(Collections.singletonList(student));
-        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.singletonList(contract));
+        StudentDto studentDto2 = new StudentDto();
+        studentDto2.setFirstName("firstName2");
+        when(studentRepository.findAllByActive(false)).thenReturn(Collections.singletonList(student2));
+        when(studentRepository.findAllByActive(true)).thenReturn(Collections.singletonList(student));
+        when(contractService.findByStudentAndStatusOpenOrWait(student)).thenReturn(Optional.ofNullable(contract));
 
         List<StudentDto> result = studentService.findAllStudentsDto();
 
-        assertEquals(Arrays.asList(studentDto,studentDto1),result);
+        assertEquals(Arrays.asList(studentDto, studentDto2), result);
     }
 
 }

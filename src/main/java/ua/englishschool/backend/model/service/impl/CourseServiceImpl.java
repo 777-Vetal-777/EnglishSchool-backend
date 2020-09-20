@@ -10,11 +10,13 @@ import ua.englishschool.backend.model.repository.CourseRepository;
 import ua.englishschool.backend.model.service.ContractService;
 import ua.englishschool.backend.model.service.CourseService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -96,6 +98,14 @@ public class CourseServiceImpl implements CourseService {
         return courseDtoList;
     }
 
+    @Override
+    public List<CourseDto> getAllWaitCourses() {
+        return courseRepository.findAllByStartDateAfter(LocalDate.now()).stream()
+                .map(course -> new CourseDto(course,
+                        course.getMaxCapacity() - contractService.findCountByCourseAndStatus(course, ContractStatusType.WAIT)))
+                .collect(Collectors.toList());
+    }
+
     private CourseDto createCourseDto(Course course, int countStudents) {
         CourseDto courseDto = new CourseDto();
         courseDto.setCourse(course);
@@ -103,4 +113,5 @@ public class CourseServiceImpl implements CourseService {
 
         return courseDto;
     }
+
 }

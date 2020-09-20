@@ -26,7 +26,9 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("Select Count(c) from Contract c where c.course = :course and c.contractStatusType = 'OPEN' or c.contractStatusType = 'WAIT'")
     int findCountByStatusOpenAndWaitAndCourse(@Param("course") Course course);
 
-    @Query("Select Count(c) from Contract c where c.course = :course and c.contractStatusType = 'OPEN'")
-    int findCountByStatusOpenAndCourse(@Param("course") Course course);
+    @Query("Select c from Contract c where c.student = :student and c.contractStatusType = 'OPEN' or c.contractStatusType = 'WAIT'")
+    Optional<Contract> findByStudentAndStatusTypeOpenOrWait(@Param("student") Student student);
 
+    @Query("Select Count(c) from Contract c where c.course = :course and c.contractStatusType = :type")
+    int findCountByCourseAndStatus(@Param("course") Course course, @Param("type") ContractStatusType type);
 }

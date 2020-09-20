@@ -11,4 +11,6 @@ public interface CourseService extends GenericService<Course> {
     List<CourseDto> getAllCoursesDtoOpenOrWait();
 
     Set<CourseDto> getAllActiveCourses();
+
+    List<CourseDto> getAllWaitCourses();
 }

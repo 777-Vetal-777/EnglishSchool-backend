@@ -21,4 +21,8 @@ public interface ContractService extends GenericService<Contract> {
 
     int findCountByStatusOpenAndCourse(Course course);
 
+    Optional<Contract> findByStudentAndStatusOpenOrWait(Student student);
+
+    int findCountByCourseAndStatus(Course course, ContractStatusType type);
+
 }

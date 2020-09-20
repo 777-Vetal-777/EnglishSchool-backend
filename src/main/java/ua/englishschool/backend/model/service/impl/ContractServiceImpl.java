@@ -87,6 +87,16 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public int findCountByStatusOpenAndCourse(Course course) {
-        return contractRepository.findCountByStatusOpenAndCourse(course);
+        return contractRepository.findCountByCourseAndStatus(course, ContractStatusType.OPEN);
+    }
+
+    @Override
+    public Optional<Contract> findByStudentAndStatusOpenOrWait(Student student) {
+        return contractRepository.findByStudentAndStatusTypeOpenOrWait(student);
+    }
+
+    @Override
+    public int findCountByCourseAndStatus(Course course, ContractStatusType type) {
+        return contractRepository.findCountByCourseAndStatus(course, type);
     }
 }

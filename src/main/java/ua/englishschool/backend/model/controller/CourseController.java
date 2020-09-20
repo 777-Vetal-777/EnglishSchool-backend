@@ -23,6 +23,8 @@ public class CourseController {
 
     private static final String URL_GET_ALL_ACTIVE_DTO = URL + "/get-all/active/dto";
 
+    private static final String URL_GET_ALL_WAIT_DTO = URL + "/get-all/wait/dto";
+
     @Autowired
     private CourseService courseService;
 
@@ -42,4 +44,8 @@ public class CourseController {
         return courseService.getAllActiveCourses();
     }
 
+    @GetMapping(URL_GET_ALL_WAIT_DTO)
+    public List<CourseDto> getAllWaitDto() {
+        return courseService.getAllWaitCourses();
+    }
 }
