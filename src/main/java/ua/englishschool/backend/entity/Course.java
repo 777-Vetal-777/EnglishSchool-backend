@@ -21,7 +21,10 @@ public class Course {
     private String name;
 
     @Column
-    private Period period;
+    private PeriodDate periodDate;
+
+    @Column
+    private PeriodTime periodTime;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", foreignKey = @ForeignKey(name = "FK_teachers_courses"))
@@ -32,6 +35,7 @@ public class Course {
 
     @Column
     private int maxCapacity;
+
 
     public long getId() {
         return id;
@@ -49,12 +53,20 @@ public class Course {
         this.name = name;
     }
 
-    public Period getPeriod() {
-        return period;
+    public PeriodDate getPeriodDate() {
+        return periodDate;
     }
 
-    public void setPeriod(Period period) {
-        this.period = period;
+    public void setPeriodDate(PeriodDate periodDate) {
+        this.periodDate = periodDate;
+    }
+
+    public PeriodTime getPeriodTime() {
+        return periodTime;
+    }
+
+    public void setPeriodTime(PeriodTime periodTime) {
+        this.periodTime = periodTime;
     }
 
     public Teacher getTeacher() {
@@ -90,13 +102,14 @@ public class Course {
                 price == course.price &&
                 maxCapacity == course.maxCapacity &&
                 Objects.equals(name, course.name) &&
-                Objects.equals(period, course.period) &&
+                Objects.equals(periodDate, course.periodDate) &&
+                Objects.equals(periodTime, course.periodTime) &&
                 Objects.equals(teacher, course.teacher);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, period, teacher, price, maxCapacity);
+        return Objects.hash(id, name, periodDate, periodTime, teacher, price, maxCapacity);
     }
 
     @Override
@@ -104,7 +117,8 @@ public class Course {
         return "Course{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", period=" + period +
+                ", periodDate=" + periodDate +
+                ", periodTime=" + periodTime +
                 ", teacher=" + teacher +
                 ", price=" + price +
                 ", maxCapacity=" + maxCapacity +

@@ -7,6 +7,7 @@ import ua.englishschool.backend.entity.core.ContractStatusType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ContractService extends GenericService<Contract> {
 
@@ -15,4 +16,9 @@ public interface ContractService extends GenericService<Contract> {
     List<Contract> getAllByCourseAndStatusType(Course course, ContractStatusType statusType);
 
     Optional<Contract> findContractByStudentAndContractStatusType(Student student, ContractStatusType contractStatusType);
+
+    int findCountByContractStatusOpenAndWaitAndCourse(Course course);
+
+    int findCountByStatusOpenAndCourse(Course course);
+
 }

@@ -30,6 +30,7 @@ public class ContractServiceImpl implements ContractService {
         return contract;
     }
 
+
     @Override
     public boolean update(Contract contract) {
         if (isExists(contract.getId())) {
@@ -77,5 +78,15 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public Optional<Contract> findContractByStudentAndContractStatusType(Student student, ContractStatusType contractStatusType) {
         return contractRepository.findContractByStudentAndContractStatusType(student, contractStatusType);
+    }
+
+    @Override
+    public int findCountByContractStatusOpenAndWaitAndCourse(Course course) {
+        return contractRepository.findCountByStatusOpenAndWaitAndCourse(course);
+    }
+
+    @Override
+    public int findCountByStatusOpenAndCourse(Course course) {
+        return contractRepository.findCountByStatusOpenAndCourse(course);
     }
 }

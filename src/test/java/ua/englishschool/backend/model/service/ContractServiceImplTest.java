@@ -170,4 +170,22 @@ public class ContractServiceImplTest {
         assertEquals(contract, result.get());
     }
 
+    @Test
+    void whenFindCountByContractStatusOpenAndWaitAndCourse_thenReturnInt() {
+        when(contractRepository.findCountByStatusOpenAndWaitAndCourse(course)).thenReturn(2);
+
+        int result = contractService.findCountByContractStatusOpenAndWaitAndCourse(course);
+
+        assertEquals(2, result);
+    }
+
+    @Test
+    void whenFindCountByStatusOpenAndCourse_thenReturnInt() {
+        when(contractRepository.findCountByStatusOpenAndCourse(course)).thenReturn(3);
+
+        int result = contractService.findCountByStatusOpenAndCourse(course);
+
+        assertEquals(3, result);
+    }
+
 }

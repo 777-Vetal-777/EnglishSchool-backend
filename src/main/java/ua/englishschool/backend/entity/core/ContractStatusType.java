@@ -2,5 +2,6 @@ package ua.englishschool.backend.entity.core;
 
 public enum ContractStatusType {
     OPEN,
-    CLOSED
+    CLOSED,
+    WAIT
 }

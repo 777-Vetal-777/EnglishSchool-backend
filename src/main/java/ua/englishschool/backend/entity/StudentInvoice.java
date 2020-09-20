@@ -4,12 +4,9 @@ import ua.englishschool.backend.entity.core.StudentInvoiceType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -21,7 +18,7 @@ public class StudentInvoice {
     private long id;
 
     @Column
-    private Period period;
+    private PeriodDate period;
 
     @Column(name = "payment_date")
     private Timestamp paymentDate;
@@ -43,11 +40,11 @@ public class StudentInvoice {
         this.id = id;
     }
 
-    public Period getPeriod() {
+    public PeriodDate getPeriod() {
         return period;
     }
 
-    public void setPeriod(Period period) {
+    public void setPeriod(PeriodDate period) {
         this.period = period;
     }
 

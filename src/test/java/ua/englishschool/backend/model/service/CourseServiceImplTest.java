@@ -7,13 +7,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.core.ContractStatusType;
+import ua.englishschool.backend.entity.dto.CourseDto;
 import ua.englishschool.backend.model.repository.CourseRepository;
 import ua.englishschool.backend.model.service.impl.CourseServiceImpl;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,15 +37,58 @@ public class CourseServiceImplTest {
     @Mock
     private CourseRepository courseRepository;
 
+    @Mock
+    private ContractService contractService;
+
     private static final long COURSE_ID = 1;
 
+    private static final long CONTRACT_ID = 2;
+
     private Course course;
+
+    private Course course2;
+
+    private CourseDto courseDto;
+
+    private CourseDto courseDto2;
+
+    private Contract contract;
+
+    private Contract contract2;
+
+    private Set<CourseDto> courseDtoSet;
 
     @BeforeEach
     void setUp() {
         course = new Course();
         course.setId(COURSE_ID);
-        course.setName("SPRING");
+        course.setName("ELEMENTARY");
+        course.setMaxCapacity(20);
+
+        course2 = new Course();
+        course2.setId(2);
+        course2.setName("INTERMEDIATE");
+        course2.setMaxCapacity(17);
+
+        courseDto = new CourseDto();
+        courseDto.setCourse(course);
+        courseDto.setAvailableStudents(17);
+
+        courseDto2 = new CourseDto();
+        courseDto2.setCourse(course2);
+        courseDto2.setAvailableStudents(14);
+
+        contract = new Contract();
+        contract.setId(CONTRACT_ID);
+        contract.setCourse(course);
+
+        contract2 = new Contract();
+        contract2.setId(10);
+        contract2.setCourse(course2);
+
+        courseDtoSet = new HashSet<>();
+        courseDtoSet.add(courseDto);
+        courseDtoSet.add(courseDto2);
     }
 
     @Test
@@ -124,5 +173,38 @@ public class CourseServiceImplTest {
         courseService.isExists(COURSE_ID);
 
         verify(courseRepository).existsById(COURSE_ID);
+    }
+
+    @Test
+    void whenGetAllDtoOpenOrWaitAndCourse_thenReturnListCoursesDto() {
+        when(courseRepository.findAll()).thenReturn(Arrays.asList(course, course2));
+        when(contractService.findCountByContractStatusOpenAndWaitAndCourse(course)).thenReturn(3);
+        when(contractService.findCountByContractStatusOpenAndWaitAndCourse(course2)).thenReturn(3);
+
+        List<CourseDto> result = courseService.getAllCoursesDtoOpenOrWait();
+
+        assertEquals(Arrays.asList(courseDto, courseDto2), result);
+    }
+
+    @Test
+    void whenGetAllDtoOpenOrWaitAndCourse_thenReturnEmptyList() {
+        when(courseRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<CourseDto> result = courseService.getAllCoursesDtoOpenOrWait();
+
+        assertEquals(Collections.emptyList(), result);
+    }
+
+    @Test
+    void whenGetAllActiveCourses_thenReturnListCoursesDto() {
+
+        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Arrays.asList(contract, contract2));
+        when(contractService.findCountByStatusOpenAndCourse(course)).thenReturn(3);
+        when(contractService.findCountByStatusOpenAndCourse(course2)).thenReturn(3);
+
+        Set<CourseDto> result = courseService.getAllActiveCourses();
+
+        assertEquals(courseDtoSet, result);
+
     }
 }
