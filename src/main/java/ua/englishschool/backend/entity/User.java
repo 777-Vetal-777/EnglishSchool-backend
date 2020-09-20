@@ -34,6 +34,9 @@ public abstract class User {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
+    @Column
+    private boolean active;
+
     public long getId() {
         return id;
     }
@@ -58,7 +61,6 @@ public abstract class User {
         this.lastName = lastName;
     }
 
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -75,12 +77,21 @@ public abstract class User {
         this.role = role;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
+                active == user.active &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(phoneNumber, user.phoneNumber) &&
@@ -89,7 +100,7 @@ public abstract class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, phoneNumber, role);
+        return Objects.hash(id, firstName, lastName, phoneNumber, role, active);
     }
 
     @Override
@@ -100,6 +111,7 @@ public abstract class User {
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role=" + role +
+                ", active=" + active +
                 '}';
     }
 }

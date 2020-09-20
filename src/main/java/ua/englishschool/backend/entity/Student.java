@@ -12,9 +12,6 @@ public class Student extends User {
     @Column
     private String address;
 
-    @Column
-    private boolean active;
-
     public String getAddress() {
         return address;
     }
@@ -23,34 +20,24 @@ public class Student extends User {
         this.address = address;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Student student = (Student) o;
-        return active == student.active &&
-                Objects.equals(address, student.address);
+        return Objects.equals(address, student.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), address, active);
+        return Objects.hash(super.hashCode(), address);
     }
 
     @Override
     public String toString() {
         return "Student{" +
                 "address='" + address + '\'' +
-                ", active=" + active +
                 '}';
     }
 }
