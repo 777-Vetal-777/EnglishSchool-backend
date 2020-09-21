@@ -11,11 +11,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.Teacher;
 import ua.englishschool.backend.entity.dto.CourseDto;
 import ua.englishschool.backend.model.service.CourseService;
+import ua.englishschool.backend.model.service.TeacherService;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -51,16 +54,32 @@ public class CourseControllerTest {
     @MockBean
     private CourseService courseService;
 
+    @MockBean
+    private TeacherService teacherService;
+
     private Course course;
 
     private CourseDto courseDto;
 
     private Set<CourseDto> courseDtoSet;
 
+    private Teacher teacher;
+
+    private Course course2;
+
     @BeforeEach
     void setUp() {
+
+        teacher = new Teacher();
+        teacher.setId(10);
+
         course = new Course();
         course.setId(COURSE_ID);
+
+
+        course2 = new Course();
+        course2.setId(COURSE_ID);
+        course2.setTeacher(teacher);
 
         courseDto = new CourseDto();
         courseDto.setCourse(course);
@@ -68,11 +87,14 @@ public class CourseControllerTest {
 
         courseDtoSet = new HashSet<>();
         courseDtoSet.add(courseDto);
+
+
     }
 
     @Test
     void createCourse_ReturnId() throws Exception {
-        when(courseService.create(course)).thenReturn(course);
+        when(courseService.create(course2)).thenReturn(course2);
+        when(teacherService.findRandomFreeTeacher()).thenReturn(Optional.ofNullable(teacher));
 
         server.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(asJsonString(course)))
                 .andDo(print())

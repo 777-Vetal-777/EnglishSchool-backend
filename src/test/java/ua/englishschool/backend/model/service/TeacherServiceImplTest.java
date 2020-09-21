@@ -57,24 +57,28 @@ public class TeacherServiceImplTest {
         teacher.setFirstName("Teacher");
         teacher.setLastName("LastName");
         teacher.setPhoneNumber(PHONE);
+        teacher.setMaxCourses(5);
 
         teacher2 = new Teacher();
         teacher2.setId(10);
         teacher2.setFirstName("Teacher2");
         teacher2.setLastName("LastName2");
         teacher2.setPhoneNumber("54321");
+        teacher2.setMaxCourses(5);
 
         teacherDto = new TeacherDto();
         teacherDto.setFirstName("Teacher");
         teacherDto.setLastName("LastName");
         teacherDto.setPhoneNumber("12345");
         teacherDto.setCountCourses(3);
+        teacherDto.setMaxCourses(5);
 
         teacherDto2 = new TeacherDto();
         teacherDto2.setFirstName("Teacher2");
         teacherDto2.setLastName("LastName2");
         teacherDto2.setPhoneNumber("54321");
         teacherDto2.setCountCourses(5);
+        teacherDto2.setMaxCourses(5);
     }
 
     @Test
@@ -181,6 +185,49 @@ public class TeacherServiceImplTest {
         TeacherDto result = teacherService.findByPhoneDto(PHONE);
 
         assertEquals(teacherDto, result);
+    }
+
+    @Test
+    void whenFindByActive_thenReturnList() {
+        when(teacherRepository.findAllByActive(true)).thenReturn(Arrays.asList(teacher, teacher2));
+
+        List<Teacher> result = teacherService.findByActive(true);
+
+        assertEquals(Arrays.asList(teacher, teacher2), result);
+    }
+
+    @Test
+    void whenFindRandomFreeTeacher_thenReturnTeacherDifferentCount() {
+        when(teacherRepository.findAllByActive(true)).thenReturn(Arrays.asList(teacher, teacher2));
+        when(courseService.countCoursesByTeacher(teacher)).thenReturn(3);
+        when(courseService.countCoursesByTeacher(teacher2)).thenReturn(2);
+
+        Optional<Teacher> result = teacherService.findRandomFreeTeacher();
+
+        assertEquals(teacher2, result.get());
+    }
+
+    @Test
+    void whenFindRandomFreeTeacher_thenReturnTeacherSameCount() {
+        when(teacherRepository.findAllByActive(true)).thenReturn(Arrays.asList(teacher, teacher2));
+        when(courseService.countCoursesByTeacher(teacher)).thenReturn(3);
+        when(courseService.countCoursesByTeacher(teacher2)).thenReturn(3);
+
+        boolean check1 = false;
+        boolean check2 = false;
+        Optional<Teacher> result;
+        for (int i = 0; i < 20; i++) {
+            result = teacherService.findRandomFreeTeacher();
+            if (result.get().equals(teacher)) {
+                check1 = true;
+            }
+            if (result.get().equals(teacher2)) {
+                check2 = true;
+            }
+        }
+        assertEquals(true, check1);
+        assertEquals(true, check2);
+
     }
 
 }
