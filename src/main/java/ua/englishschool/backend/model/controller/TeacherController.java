@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.englishschool.backend.entity.Teacher;
-import ua.englishschool.backend.entity.exception.DeleteEntityException;
+import ua.englishschool.backend.entity.core.RoleType;
+import ua.englishschool.backend.entity.dto.TeacherDto;
 import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.service.TeacherService;
 
@@ -23,17 +24,22 @@ public class TeacherController {
 
     private static final String URL = "/teachers";
 
+    private static final String URL_GET_ALL_DTO = URL + "/dto";
+
+    private static final String URL_GET_BY_PHONE_DTO = URL + "/dto/by-phone/{phone}";
+
     @Autowired
     private TeacherService teacherService;
 
     @GetMapping(URL + "/{id}")
     public Teacher getById(@PathVariable("id") long id) {
-       return teacherService.getById(id).orElseThrow(() -> new EntityNotFoundException("Teacher was not found with id: " + id));
+        return teacherService.getById(id).orElseThrow(() -> new EntityNotFoundException("Teacher was not found with id: " + id));
     }
 
     @PostMapping(URL)
     @ResponseStatus(HttpStatus.CREATED)
     public long save(@RequestBody Teacher teacher) {
+        teacher.setRole(RoleType.TEACHER);
         return teacherService.create(teacher).getId();
     }
 
@@ -54,5 +60,15 @@ public class TeacherController {
     @GetMapping(URL)
     public List<Teacher> getAll() {
         return teacherService.getAll();
+    }
+
+    @GetMapping(URL_GET_ALL_DTO)
+    public List<TeacherDto> getAllDto() {
+        return teacherService.getAllTeachersDto();
+    }
+
+    @GetMapping(URL_GET_BY_PHONE_DTO)
+    public TeacherDto findByPhone(@PathVariable("phone") String phone) {
+        return teacherService.findByPhoneDto(phone);
     }
 }

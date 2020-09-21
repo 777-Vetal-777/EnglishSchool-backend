@@ -20,7 +20,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -175,7 +174,7 @@ public class ContractServiceImplTest {
     void whenFindCountByContractStatusOpenAndWaitAndCourse_thenReturnInt() {
         when(contractRepository.findCountByStatusOpenAndWaitAndCourse(course)).thenReturn(2);
 
-        int result = contractService.findCountByContractStatusOpenAndWaitAndCourse(course);
+        int result = contractService.countByContractStatusOpenAndWaitAndCourse(course);
 
         assertEquals(2, result);
     }
@@ -194,7 +193,7 @@ public class ContractServiceImplTest {
     void whenFindCountByCourseAndStatus_thenReturnContract() {
         when(contractRepository.findCountByCourseAndStatus(course, ContractStatusType.OPEN)).thenReturn(5);
 
-        int result = contractService.findCountByCourseAndStatus(course, ContractStatusType.OPEN);
+        int result = contractService.countByCourseAndStatus(course, ContractStatusType.OPEN);
 
         assertEquals(5, result);
     }

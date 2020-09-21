@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.Teacher;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.entity.dto.CourseDto;
 import ua.englishschool.backend.model.repository.CourseRepository;
@@ -59,6 +60,8 @@ public class CourseServiceImplTest {
 
     private Set<CourseDto> courseDtoSet;
 
+    private Teacher teacher;
+
     @BeforeEach
     void setUp() {
         course = new Course();
@@ -90,6 +93,9 @@ public class CourseServiceImplTest {
         courseDtoSet = new HashSet<>();
         courseDtoSet.add(courseDto);
         courseDtoSet.add(courseDto2);
+
+        teacher = new Teacher();
+        teacher.setId(20);
     }
 
     @Test
@@ -179,8 +185,8 @@ public class CourseServiceImplTest {
     @Test
     void whenGetAllDtoOpenOrWaitAndCourse_thenReturnListCoursesDto() {
         when(courseRepository.findAll()).thenReturn(Arrays.asList(course, course2));
-        when(contractService.findCountByContractStatusOpenAndWaitAndCourse(course)).thenReturn(3);
-        when(contractService.findCountByContractStatusOpenAndWaitAndCourse(course2)).thenReturn(3);
+        when(contractService.countByContractStatusOpenAndWaitAndCourse(course)).thenReturn(3);
+        when(contractService.countByContractStatusOpenAndWaitAndCourse(course2)).thenReturn(3);
 
         List<CourseDto> result = courseService.getAllCoursesDtoOpenOrWait();
 
@@ -200,8 +206,8 @@ public class CourseServiceImplTest {
     void whenGetAllActiveCourses_thenReturnListCoursesDto() {
 
         when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Arrays.asList(contract, contract2));
-        when(contractService.findCountByStatusOpenAndCourse(course)).thenReturn(3);
-        when(contractService.findCountByStatusOpenAndCourse(course2)).thenReturn(3);
+        when(contractService.countByStatusOpenAndCourse(course)).thenReturn(3);
+        when(contractService.countByStatusOpenAndCourse(course2)).thenReturn(3);
 
         Set<CourseDto> result = courseService.getAllActiveCourses();
 
@@ -212,11 +218,20 @@ public class CourseServiceImplTest {
     @Test
     void whenGetAllWaitCourses_thenReturnListCoursesDto() {
         when(courseRepository.findAllByStartDateAfter(LocalDate.now())).thenReturn(Arrays.asList(course, course2));
-        when(contractService.findCountByCourseAndStatus(course, ContractStatusType.WAIT)).thenReturn(3);
-        when(contractService.findCountByCourseAndStatus(course2, ContractStatusType.WAIT)).thenReturn(3);
+        when(contractService.countByCourseAndStatus(course, ContractStatusType.WAIT)).thenReturn(3);
+        when(contractService.countByCourseAndStatus(course2, ContractStatusType.WAIT)).thenReturn(3);
 
         List<CourseDto> courseDtoList = courseService.getAllWaitCourses();
 
         assertEquals(Arrays.asList(courseDto, courseDto2), courseDtoList);
+    }
+
+    @Test
+    void whenCountCoursesByTeacher_thenReturnCount() {
+        when(courseRepository.countByTeacherAndEndDateAfter(teacher, LocalDate.now())).thenReturn(5);
+
+        int result = courseService.countCoursesByTeacher(teacher);
+
+        assertEquals(5, result);
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.englishschool.backend.entity.Teacher;
+import ua.englishschool.backend.entity.core.RoleType;
+import ua.englishschool.backend.entity.dto.TeacherDto;
 import ua.englishschool.backend.model.service.TeacherService;
 
 import java.util.Collections;
@@ -20,8 +22,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -33,7 +35,13 @@ public class TeacherControllerTest {
 
     private static final String URL = "/teachers";
 
+    private static final String URL_GET_ALL_DTO = URL + "/dto";
+
+    private static final String URL_GET_BY_PHONE_DTO = URL + "/dto/by-phone/{phone}";
+
     private static final long TEACHER_ID = 1;
+
+    private static final String PHONE = "12345";
 
     @Autowired
     private MockMvc server;
@@ -43,10 +51,16 @@ public class TeacherControllerTest {
 
     private Teacher teacher;
 
+    private TeacherDto teacherDto;
+
     @BeforeEach
     void setUp() {
         teacher = new Teacher();
         teacher.setId(TEACHER_ID);
+        teacher.setRole(RoleType.TEACHER);
+
+        teacherDto = new TeacherDto();
+        teacherDto.setFirstName("teacherName");
     }
 
     @Test
@@ -148,6 +162,26 @@ public class TeacherControllerTest {
         verify(teacherService).delete(TEACHER_ID);
     }
 
+    @Test
+    void getAllDto_ReturnOk() throws Exception {
+        when(teacherService.getAllTeachersDto()).thenReturn(Collections.singletonList(teacherDto));
+
+        server.perform(get(URL_GET_ALL_DTO))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(Collections.singletonList(teacherDto))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findByPhone_ReturnOk() throws Exception {
+        when(teacherService.findByPhoneDto(PHONE)).thenReturn(teacherDto);
+
+        server.perform(get(URL_GET_BY_PHONE_DTO,PHONE))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(teacherDto)))
+                .andExpect(status().isOk());
+    }
+
     private String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -155,4 +189,5 @@ public class TeacherControllerTest {
             throw new RuntimeException(e);
         }
     }
+
 }

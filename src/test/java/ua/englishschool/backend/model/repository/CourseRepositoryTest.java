@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ua.englishschool.backend.entity.Course;
 import ua.englishschool.backend.entity.PeriodDate;
+import ua.englishschool.backend.entity.Teacher;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -35,13 +36,21 @@ public class CourseRepositoryTest {
 
     private PeriodDate periodDate2;
 
+    private Teacher teacher;
+
     @BeforeEach
     void setUp() {
+
+        teacher = new Teacher();
+        teacher.setFirstName("Teacher");
+        entityManager.persistAndFlush(teacher);
+
         periodDate = new PeriodDate();
-        periodDate.setStartDate(LocalDate.parse("2020-09-22"));
-        periodDate.setEndDate(LocalDate.parse("2020-10-21"));
+        periodDate.setStartDate(LocalDate.parse("2022-09-22"));
+        periodDate.setEndDate(LocalDate.parse("2022-10-21"));
         course = new Course();
         course.setPeriodDate(periodDate);
+        course.setTeacher(teacher);
         entityManager.persistAndFlush(course);
 
 
@@ -56,7 +65,7 @@ public class CourseRepositoryTest {
     }
 
     @Test
-    void whenFindAllByStartDateAfterToday_ReturnCourse() {
+    void whenFindAllByStartDateAfter_ReturnCourse() {
 
         List<Course> courses = courseRepository.findAllByStartDateAfter(LocalDate.now());
 
@@ -64,12 +73,20 @@ public class CourseRepositoryTest {
     }
 
     @Test
-    void whenFindAllByStartDateAfterToday_ReturnCourses() {
+    void whenFindAllByStartDateAfter_ReturnCourses() {
         course2.getPeriodDate().setStartDate(LocalDate.parse("2020-09-27"));
         entityManager.merge(course2);
         List<Course> courses = courseRepository.findAllByStartDateAfter(LocalDate.now());
 
         assertEquals(Arrays.asList(course, course2), courses);
 
+    }
+
+    @Test
+    void whenCountByTeacherAndEndDateAfter_ReturnCount() {
+
+        int count = courseRepository.countByTeacherAndEndDateAfter(teacher, LocalDate.now());
+
+        assertEquals(1, count);
     }
 }

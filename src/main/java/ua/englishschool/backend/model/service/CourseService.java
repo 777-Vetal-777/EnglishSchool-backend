@@ -1,9 +1,11 @@
 package ua.englishschool.backend.model.service;
 
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.Teacher;
 import ua.englishschool.backend.entity.dto.CourseDto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface CourseService extends GenericService<Course> {
@@ -13,4 +15,6 @@ public interface CourseService extends GenericService<Course> {
     Set<CourseDto> getAllActiveCourses();
 
     List<CourseDto> getAllWaitCourses();
+
+    int countCoursesByTeacher(Teacher teacher);
 }

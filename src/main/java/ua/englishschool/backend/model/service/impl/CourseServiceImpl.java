@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.Teacher;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.entity.dto.CourseDto;
 import ua.englishschool.backend.model.repository.CourseRepository;
@@ -77,7 +78,7 @@ public class CourseServiceImpl implements CourseService {
         List<Course> listCourses = getAll();
         List<CourseDto> listCoursesDto = new ArrayList<>();
         for (Course course : listCourses) {
-            int countStudents = contractService.findCountByContractStatusOpenAndWaitAndCourse(course);
+            int countStudents = contractService.countByContractStatusOpenAndWaitAndCourse(course);
             listCoursesDto.add(createCourseDto(course, countStudents));
         }
         return listCoursesDto;
@@ -92,7 +93,7 @@ public class CourseServiceImpl implements CourseService {
             courses.add(contract.getCourse());
         }
         for (Course course : courses) {
-            int countStudents = contractService.findCountByStatusOpenAndCourse(course);
+            int countStudents = contractService.countByStatusOpenAndCourse(course);
             courseDtoList.add(createCourseDto(course, countStudents));
         }
         return courseDtoList;
@@ -102,8 +103,13 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseDto> getAllWaitCourses() {
         return courseRepository.findAllByStartDateAfter(LocalDate.now()).stream()
                 .map(course -> new CourseDto(course,
-                        course.getMaxCapacity() - contractService.findCountByCourseAndStatus(course, ContractStatusType.WAIT)))
+                        course.getMaxCapacity() - contractService.countByCourseAndStatus(course, ContractStatusType.WAIT)))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public int countCoursesByTeacher(Teacher teacher) {
+        return courseRepository.countByTeacherAndEndDateAfter(teacher, LocalDate.now());
     }
 
     private CourseDto createCourseDto(Course course, int countStudents) {

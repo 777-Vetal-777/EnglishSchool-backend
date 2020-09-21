@@ -81,12 +81,12 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public int findCountByContractStatusOpenAndWaitAndCourse(Course course) {
+    public int countByContractStatusOpenAndWaitAndCourse(Course course) {
         return contractRepository.findCountByStatusOpenAndWaitAndCourse(course);
     }
 
     @Override
-    public int findCountByStatusOpenAndCourse(Course course) {
+    public int countByStatusOpenAndCourse(Course course) {
         return contractRepository.findCountByCourseAndStatus(course, ContractStatusType.OPEN);
     }
 
@@ -96,7 +96,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public int findCountByCourseAndStatus(Course course, ContractStatusType type) {
+    public int countByCourseAndStatus(Course course, ContractStatusType type) {
         return contractRepository.findCountByCourseAndStatus(course, type);
     }
 }
