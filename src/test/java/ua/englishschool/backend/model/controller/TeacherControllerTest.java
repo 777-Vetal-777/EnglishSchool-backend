@@ -39,6 +39,8 @@ public class TeacherControllerTest {
 
     private static final String URL_GET_BY_PHONE_DTO = URL + "/dto/by-phone/{phone}";
 
+    private static final String URL_CHANGE_STATUS_ACTIVE = URL + "/change-active/{teacherId}";
+
     private static final long TEACHER_ID = 1;
 
     private static final String PHONE = "12345";
@@ -176,9 +178,29 @@ public class TeacherControllerTest {
     void findByPhone_ReturnOk() throws Exception {
         when(teacherService.findByPhoneDto(PHONE)).thenReturn(teacherDto);
 
-        server.perform(get(URL_GET_BY_PHONE_DTO,PHONE))
+        server.perform(get(URL_GET_BY_PHONE_DTO, PHONE))
                 .andDo(print())
                 .andExpect(content().json(asJsonString(teacherDto)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void changeStatusActive_ReturnTrue() throws Exception {
+        when(teacherService.changeStatusActive(TEACHER_ID)).thenReturn(true);
+
+        server.perform(put(URL_CHANGE_STATUS_ACTIVE, TEACHER_ID))
+                .andDo(print())
+                .andExpect(content().string(String.valueOf(true)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void changeStatusActive_ReturnFalse() throws Exception {
+        when(teacherService.changeStatusActive(TEACHER_ID)).thenReturn(false);
+
+        server.perform(put(URL_CHANGE_STATUS_ACTIVE, TEACHER_ID))
+                .andDo(print())
+                .andExpect(content().string(String.valueOf(false)))
                 .andExpect(status().isOk());
     }
 

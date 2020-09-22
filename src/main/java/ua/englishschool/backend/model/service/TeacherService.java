@@ -15,4 +15,6 @@ public interface TeacherService extends GenericService<Teacher> {
     Optional<Teacher> findRandomFreeTeacher();
 
     List<Teacher> findByActive(boolean acive);
+
+    boolean changeStatusActive(long id);
 }

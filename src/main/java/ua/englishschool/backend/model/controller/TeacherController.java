@@ -18,6 +18,7 @@ import ua.englishschool.backend.model.service.TeacherService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class TeacherController {
@@ -27,6 +28,8 @@ public class TeacherController {
     private static final String URL_GET_ALL_DTO = URL + "/dto";
 
     private static final String URL_GET_BY_PHONE_DTO = URL + "/dto/by-phone/{phone}";
+
+    private static final String URL_CHANGE_STATUS_ACTIVE = URL + "/change-active/{teacherId}";
 
     @Autowired
     private TeacherService teacherService;
@@ -70,5 +73,11 @@ public class TeacherController {
     @GetMapping(URL_GET_BY_PHONE_DTO)
     public TeacherDto findByPhone(@PathVariable("phone") String phone) {
         return teacherService.findByPhoneDto(phone);
+    }
+
+    @PutMapping(URL_CHANGE_STATUS_ACTIVE)
+    public boolean changeStatusActive(@PathVariable("teacherId") long id) {
+
+        return teacherService.changeStatusActive(id);
     }
 }

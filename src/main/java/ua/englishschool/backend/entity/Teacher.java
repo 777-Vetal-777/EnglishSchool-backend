@@ -3,10 +3,12 @@ package ua.englishschool.backend.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "person_id")
+@PrimaryKeyJoinColumn(name = "user_id")
+@Table(name = "teachers")
 public class Teacher extends User {
 
     @Column

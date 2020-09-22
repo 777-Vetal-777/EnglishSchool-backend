@@ -4,6 +4,7 @@ package ua.englishschool.backend.model.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -233,6 +234,19 @@ public class TeacherServiceImplTest {
         assertEquals(true, check1);
         assertEquals(true, check2);
 
+    }
+
+    @Test
+    void whenChangeStatusActive_thenReturnTrue() {
+        ArgumentCaptor<Teacher> captor = ArgumentCaptor.forClass(Teacher.class);
+        when(teacherRepository.findById(TEACHER_ID)).thenReturn(Optional.ofNullable(teacher));
+        when(teacherRepository.existsById(TEACHER_ID)).thenReturn(true);
+
+        boolean active = teacherService.changeStatusActive(TEACHER_ID);
+
+        verify(teacherRepository).saveAndFlush(captor.capture());
+        assertTrue(captor.getValue().isActive());
+        assertTrue(active);
     }
 
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.englishschool.backend.entity.Teacher;
 import ua.englishschool.backend.entity.classes.FreeTeacher;
 import ua.englishschool.backend.entity.dto.TeacherDto;
+import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.repository.TeacherRepository;
 import ua.englishschool.backend.model.service.CourseService;
 import ua.englishschool.backend.model.service.TeacherService;
@@ -121,6 +122,23 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<Teacher> findByActive(boolean active) {
         return teacherRepository.findAllByActive(true);
+    }
+
+
+
+    @Override
+    public boolean changeStatusActive(long id) {
+        Optional<Teacher> teacher = getById(id);
+        teacher.orElseThrow(() -> new EntityNotFoundException("Teacher was not found with id: " + id));
+        if (teacher.get().isActive()) {
+            teacher.get().setActive(false);
+        } else {
+            teacher.get().setActive(true);
+        }
+        if (!update(teacher.get())) {
+            new UpdateEntityException("Teacher was not updated with id: " + id);
+        }
+        return true;
     }
 
     private TeacherDto fillTeacherDto(Teacher teacher) {
