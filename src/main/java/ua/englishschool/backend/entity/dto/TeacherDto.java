@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class TeacherDto {
 
+    private long teacherId;
+
     private String firstName;
 
     private String lastName;
@@ -14,15 +16,15 @@ public class TeacherDto {
 
     private int countCourses;
 
-    public TeacherDto(String firstName, String lastName, String phoneNumber, int maxCourses, int countCourses) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.maxCourses = maxCourses;
-        this.countCourses = countCourses;
+    private boolean active;
+
+
+    public long getTeacherId() {
+        return teacherId;
     }
 
-    public TeacherDto() {
+    public void setTeacherId(long teacherId) {
+        this.teacherId = teacherId;
     }
 
     public String getFirstName() {
@@ -65,13 +67,23 @@ public class TeacherDto {
         this.countCourses = countCourses;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TeacherDto that = (TeacherDto) o;
-        return maxCourses == that.maxCourses &&
+        return teacherId == that.teacherId &&
+                maxCourses == that.maxCourses &&
                 countCourses == that.countCourses &&
+                active == that.active &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(phoneNumber, that.phoneNumber);
@@ -79,17 +91,19 @@ public class TeacherDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, phoneNumber, maxCourses, countCourses);
+        return Objects.hash(teacherId, firstName, lastName, phoneNumber, maxCourses, countCourses, active);
     }
 
     @Override
     public String toString() {
         return "TeacherDto{" +
-                "firstName='" + firstName + '\'' +
+                "teacherId=" + teacherId +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", maxCourses=" + maxCourses +
                 ", countCourses=" + countCourses +
+                ", active=" + active +
                 '}';
     }
 }

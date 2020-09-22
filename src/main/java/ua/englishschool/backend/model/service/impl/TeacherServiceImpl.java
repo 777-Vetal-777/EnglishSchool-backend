@@ -68,8 +68,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<TeacherDto> getAllTeachersDto() {
         return getAll().stream()
-                .map(teacher -> new TeacherDto(teacher.getFirstName(), teacher.getLastName(), teacher.getPhoneNumber(),
-                        teacher.getMaxCourses(), courseService.countCoursesByTeacher(teacher)))
+                .map(teacher -> fillTeacherDto(teacher))
                 .collect(Collectors.toList());
     }
 
@@ -78,8 +77,7 @@ public class TeacherServiceImpl implements TeacherService {
         Optional<Teacher> teacher = teacherRepository.findByPhoneNumber(phone);
         teacher.orElseThrow(() -> new EntityNotFoundException("Teacher was not found with phone: " + phone));
 
-        return new TeacherDto(teacher.get().getFirstName(), teacher.get().getLastName(), teacher.get().getPhoneNumber(),
-                teacher.get().getMaxCourses(), courseService.countCoursesByTeacher(teacher.get()));
+        return fillTeacherDto(teacher.get());
     }
 
     @Override
@@ -123,5 +121,17 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<Teacher> findByActive(boolean active) {
         return teacherRepository.findAllByActive(true);
+    }
+
+    private TeacherDto fillTeacherDto(Teacher teacher) {
+        TeacherDto teacherDto = new TeacherDto();
+        teacherDto.setTeacherId(teacher.getId());
+        teacherDto.setFirstName(teacher.getFirstName());
+        teacherDto.setLastName(teacher.getLastName());
+        teacherDto.setPhoneNumber(teacher.getPhoneNumber());
+        teacherDto.setActive(teacher.isActive());
+        teacherDto.setMaxCourses(teacher.getMaxCourses());
+        teacherDto.setCountCourses(courseService.countCoursesByTeacher(teacher));
+        return teacherDto;
     }
 }

@@ -146,7 +146,7 @@ public class ContractControllerTest {
 
         server.perform(put(URL).content(asJsonString(contract)).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isConflict());
+                .andExpect(status().isNoContent());
 
         verify(contractService).update(contract);
     }

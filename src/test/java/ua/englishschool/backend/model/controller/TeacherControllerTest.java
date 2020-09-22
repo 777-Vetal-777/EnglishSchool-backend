@@ -119,7 +119,7 @@ public class TeacherControllerTest {
         server.perform(put(URL).content(asJsonString(teacher))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isConflict());
+                .andExpect(status().isNoContent());
 
         verify(teacherService).update(teacher);
 

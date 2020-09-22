@@ -12,6 +12,8 @@ import ua.englishschool.backend.entity.dto.TeacherDto;
 import ua.englishschool.backend.model.repository.TeacherRepository;
 import ua.englishschool.backend.model.service.impl.TeacherServiceImpl;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -67,6 +70,7 @@ public class TeacherServiceImplTest {
         teacher2.setMaxCourses(5);
 
         teacherDto = new TeacherDto();
+        teacherDto.setTeacherId(TEACHER_ID);
         teacherDto.setFirstName("Teacher");
         teacherDto.setLastName("LastName");
         teacherDto.setPhoneNumber("12345");
@@ -74,6 +78,7 @@ public class TeacherServiceImplTest {
         teacherDto.setMaxCourses(5);
 
         teacherDto2 = new TeacherDto();
+        teacherDto2.setTeacherId(10);
         teacherDto2.setFirstName("Teacher2");
         teacherDto2.setLastName("LastName2");
         teacherDto2.setPhoneNumber("54321");
@@ -227,6 +232,18 @@ public class TeacherServiceImplTest {
         }
         assertEquals(true, check1);
         assertEquals(true, check2);
+
+    }
+
+
+    @Test
+    void whenFindRandomFreeTeacher_thenReturnException() {
+        when(teacherRepository.findAllByActive(true)).thenReturn(new ArrayList<>());
+
+        assertThrows(EntityNotFoundException.class, () ->
+        {
+            teacherService.findRandomFreeTeacher();
+        });
 
     }
 

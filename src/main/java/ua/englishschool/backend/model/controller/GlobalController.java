@@ -15,7 +15,7 @@ public class GlobalController {
 
     @ExceptionHandler(UpdateEntityException.class)
     public ResponseEntity handleUpdateEntityException(UpdateEntityException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
     }
 
 
