@@ -125,6 +125,10 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
 
+    @Override
+    public Optional<Teacher> findByPhone(String phone) {
+        return teacherRepository.findByPhoneNumber(phone);
+    }
 
     @Override
     public boolean changeStatusActive(long id) {

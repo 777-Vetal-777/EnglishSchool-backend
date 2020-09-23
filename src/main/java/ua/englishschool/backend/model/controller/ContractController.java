@@ -9,15 +9,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.core.ContractStatusType;
+import ua.englishschool.backend.entity.dto.ContractDto;
+import ua.englishschool.backend.entity.dto.CreateContractDto;
 import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.service.ContractService;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ContractController {
@@ -26,9 +31,13 @@ public class ContractController {
 
     private static final String GET_BY_ID = URL + "/{id}";
 
+    private static final String URL_CREATE_CONTRACT_DTO = URL + "/create-contract";
+
     private static final String DELETE_BY_ID = URL + "/{id}";
 
     private static final String GET_ALL_WITH_STATUS_OPEN = URL + "/active";
+
+    private static final String URL_FIND_BY_PHONE = URL + "/find-by-phone/{phone}";
 
     @Autowired
     private ContractService contractService;
@@ -40,9 +49,20 @@ public class ContractController {
     @PostMapping(URL)
     @ResponseStatus(HttpStatus.CREATED)
     public long createContract(@RequestBody Contract contract) {
+        if (contract.getCourse().getPeriodDate().getStartDate().isAfter(LocalDate.now())) {
+            contract.setContractStatusType(ContractStatusType.WAIT);
+        } else {
+            contract.setContractStatusType(ContractStatusType.OPEN);
+        }
         long id = contractService.create(contract).getId();
         logger.debug("Contract with id " + id + " was created successfully");
         return id;
+    }
+
+    @PostMapping(URL_CREATE_CONTRACT_DTO)
+    @ResponseStatus(HttpStatus.CREATED)
+    public long createContract(@RequestBody CreateContractDto createContractDto) {
+        return contractService.createContract(createContractDto);
     }
 
     @GetMapping(GET_BY_ID)
@@ -72,5 +92,11 @@ public class ContractController {
     @GetMapping(GET_ALL_WITH_STATUS_OPEN)
     public List<Contract> getAllStatusOpen() {
         return contractService.getAllByStatus(ContractStatusType.OPEN);
+    }
+
+    @GetMapping(URL_FIND_BY_PHONE)
+    public ContractDto findByPhone(@PathVariable("phone") String phone) {
+
+        return contractService.findByPhone(phone);
     }
 }

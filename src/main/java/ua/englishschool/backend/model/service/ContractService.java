@@ -4,6 +4,8 @@ import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
 import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.core.ContractStatusType;
+import ua.englishschool.backend.entity.dto.ContractDto;
+import ua.englishschool.backend.entity.dto.CreateContractDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +27,8 @@ public interface ContractService extends GenericService<Contract> {
 
     int countByCourseAndStatus(Course course, ContractStatusType type);
 
+    ContractDto findByPhone(String phone);
+
+    long createContract(CreateContractDto createContractDto);
 
 }

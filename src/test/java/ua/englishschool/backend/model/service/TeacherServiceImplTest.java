@@ -261,4 +261,13 @@ public class TeacherServiceImplTest {
 
     }
 
+    @Test
+    void whenFindByPhone_thenReturnTeacher() {
+        when(teacherRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.ofNullable(teacher));
+
+        Optional<Teacher> result = teacherService.findByPhone(PHONE);
+
+        assertEquals(teacher, result.get());
+    }
+
 }

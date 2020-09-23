@@ -17,4 +17,6 @@ public interface TeacherService extends GenericService<Teacher> {
     List<Teacher> findByActive(boolean acive);
 
     boolean changeStatusActive(long id);
+
+    Optional<Teacher> findByPhone(String phone);
 }

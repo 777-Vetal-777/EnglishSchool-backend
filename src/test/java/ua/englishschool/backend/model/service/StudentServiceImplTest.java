@@ -88,6 +88,7 @@ public class StudentServiceImplTest {
         contract2.setStudent(student2);
 
         studentDto = new StudentDto();
+        studentDto.setStudentId(STUDENT_ID);
         studentDto.setFirstName(student.getFirstName());
         studentDto.setLastName(student.getLastName());
         studentDto.setPhoneNumber(student.getPhoneNumber());
@@ -257,6 +258,7 @@ public class StudentServiceImplTest {
     @Test
     void whenFindAllStudentsDto_thenReturnListStudents() {
         StudentDto studentDto2 = new StudentDto();
+        studentDto2.setStudentId(5);
         studentDto2.setFirstName("firstName2");
         when(studentRepository.findAllByActive(false)).thenReturn(Collections.singletonList(student2));
         when(studentRepository.findAllByActive(true)).thenReturn(Collections.singletonList(student));

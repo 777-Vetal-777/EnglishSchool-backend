@@ -16,6 +16,7 @@ import ua.englishschool.backend.entity.dto.TeacherDto;
 import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.service.TeacherService;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +44,10 @@ public class TeacherController {
     @ResponseStatus(HttpStatus.CREATED)
     public long save(@RequestBody Teacher teacher) {
         teacher.setRole(RoleType.TEACHER);
+        Optional<Teacher> teacherOptional = teacherService.findByPhone(teacher.getPhoneNumber());
+        if (teacherOptional.isPresent()) {
+          throw new EntityExistsException("Teacher is existed");
+        }
         return teacherService.create(teacher).getId();
     }
 

@@ -83,10 +83,11 @@ public class StudentServiceImpl implements StudentService {
         }
         Optional<Contract> contract = contractService.findContractByStudentAndContractStatusType(student.get(), ContractStatusType.OPEN);
         if (contract.isEmpty()) {
-            return Optional.of(new StudentDto(student.get().getFirstName(), student.get().getLastName(), student.get().getPhoneNumber(), null));
+            return Optional.of(new StudentDto(student.get().getId(), student.get().getFirstName(),
+                    student.get().getLastName(), student.get().getPhoneNumber(), null));
         }
 
-        return Optional.of(new StudentDto(student.get().getFirstName(), student.get().getLastName(),
+        return Optional.of(new StudentDto(student.get().getId(), student.get().getFirstName(), student.get().getLastName(),
                 student.get().getPhoneNumber(), contract.get().getCourse().getName()));
     }
 
@@ -95,7 +96,7 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentDto> findActiveStudentsDto() {
 
         return contractService.getAllByStatus(ContractStatusType.OPEN).stream()
-                .map(contract -> new StudentDto(contract.getStudent().getFirstName(), contract.getStudent().getLastName(),
+                .map(contract -> new StudentDto(contract.getStudent().getId(), contract.getStudent().getFirstName(), contract.getStudent().getLastName(),
                         contract.getStudent().getPhoneNumber(), contract.getCourse().getName()))
                 .collect(Collectors.toList());
     }
@@ -103,9 +104,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<StudentDto> findAllStudentsDto() {
         List<StudentDto> list = studentRepository.findAllByActive(true).stream()
-                .map(student -> new StudentDto(student.getFirstName(), student.getLastName(),
-                        student.getPhoneNumber(),
-                        contractService.findByStudentAndStatusOpenOrWait(student).get().getCourse().getName()))
+                .map(student -> generateStudentDto(student))
                 .collect(Collectors.toList());
         list.addAll(findAllByActiveFalseDto());
         return list;
@@ -114,7 +113,22 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<StudentDto> findAllByActiveFalseDto() {
         return studentRepository.findAllByActive(false).stream()
-                .map(student -> new StudentDto(student.getFirstName(), student.getLastName(), student.getPhoneNumber(), null))
+                .map(student -> generateStudentDto(student))
                 .collect(Collectors.toList());
+    }
+
+    private StudentDto generateStudentDto(Student student) {
+        Optional<Contract> contract = contractService.findByStudentAndStatusOpenOrWait(student);
+        String courseName = null;
+        if (contract.isPresent()) {
+            courseName = contract.get().getCourse().getName();
+        }
+        StudentDto studentDto = new StudentDto();
+        studentDto.setStudentId(student.getId());
+        studentDto.setFirstName(student.getFirstName());
+        studentDto.setLastName(student.getLastName());
+        studentDto.setPhoneNumber(student.getPhoneNumber());
+        studentDto.setCourseName(courseName);
+        return studentDto;
     }
 }

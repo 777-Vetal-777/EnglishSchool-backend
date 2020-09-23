@@ -12,9 +12,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.englishschool.backend.entity.Contract;
+import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.PeriodDate;
 import ua.englishschool.backend.entity.core.ContractStatusType;
+import ua.englishschool.backend.entity.dto.ContractDto;
+import ua.englishschool.backend.entity.dto.CreateContractDto;
 import ua.englishschool.backend.model.service.ContractService;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -43,6 +48,12 @@ public class ContractControllerTest {
 
     private static final String GET_ALL_WITH_STATUS_OPEN = URL + "/active";
 
+    private static final String URL_CREATE_CONTRACT_DTO = URL + "/create-contract";
+
+    private static final String URL_FIND_BY_PHONE = URL + "/find-by-phone/{phone}";
+
+    private static final String PHONE = "12345";
+
     private static final long CONTRACT_ID = 1;
 
     @Autowired
@@ -53,24 +64,25 @@ public class ContractControllerTest {
 
     private Contract contract;
 
+    private CreateContractDto createContractDto;
+
+    private ContractDto contractDto;
+
     @BeforeEach
     void setUp() {
+
         contract = new Contract();
         contract.setId(CONTRACT_ID);
         contract.setContractStatusType(ContractStatusType.OPEN);
+
+        createContractDto = new CreateContractDto();
+        createContractDto.setCourseId(1);
+        createContractDto.setCourseId(2);
+
+        contractDto = new ContractDto();
+        contractDto.setPhone(PHONE);
     }
 
-    @Test
-    void create_ReturnId() throws Exception {
-        when(contractService.create(contract)).thenReturn(contract);
-
-        server.perform(post(URL).content(asJsonString(contract)).contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(content().string(String.valueOf(CONTRACT_ID)))
-                .andExpect(status().isCreated());
-
-        verify(contractService).create(contract);
-    }
 
     @Test
     void getById_ReturnContract() throws Exception {
@@ -105,6 +117,34 @@ public class ContractControllerTest {
                 .andExpect(status().isOk());
 
         verify(contractService).getAll();
+    }
+
+    @Test
+    void create_ReturnId() throws Exception {
+        PeriodDate periodDate = new PeriodDate();
+        periodDate.setStartDate(LocalDate.now());
+        Course course = new Course();
+        course.setPeriodDate(periodDate);
+        contract.setCourse(course);
+
+        when(contractService.create(contract)).thenReturn(contract);
+
+        server.perform(post(URL).content(asJsonString(contract)).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string(String.valueOf(CONTRACT_ID)))
+                .andExpect(status().isCreated());
+
+        verify(contractService).create(contract);
+    }
+
+    @Test
+    void createContractCreateContractDto_ReturnId() throws Exception {
+        when(contractService.createContract(createContractDto)).thenReturn(Long.valueOf(3));
+
+        server.perform(post(URL_CREATE_CONTRACT_DTO).content(asJsonString(createContractDto)).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string(String.valueOf(3)))
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -161,6 +201,16 @@ public class ContractControllerTest {
                 .andExpect(status().isOk());
 
         verify(contractService).getAllByStatus(ContractStatusType.OPEN);
+    }
+
+    @Test
+    void findByPhone_ReturnContractDto() throws Exception {
+        when(contractService.findByPhone(PHONE)).thenReturn(contractDto);
+
+        server.perform(get(URL_FIND_BY_PHONE, PHONE))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(contractDto)))
+                .andExpect(status().isOk());
     }
 
     private String asJsonString(final Object obj) {

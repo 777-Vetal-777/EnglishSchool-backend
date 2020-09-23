@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class StudentDto {
 
+    private long studentId;
+
     private String firstName;
 
     private String lastName;
@@ -12,14 +14,23 @@ public class StudentDto {
 
     private String courseName;
 
-    public StudentDto(String firstName, String lastName, String phoneNumber, String nameCourse) {
+    public StudentDto(long studentId, String firstName, String lastName, String phoneNumber, String courseName) {
+        this.studentId = studentId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.courseName = nameCourse;
+        this.courseName = courseName;
     }
 
     public StudentDto() {
+    }
+
+    public long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(long studentId) {
+        this.studentId = studentId;
     }
 
     public String getFirstName() {
@@ -59,7 +70,8 @@ public class StudentDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudentDto that = (StudentDto) o;
-        return Objects.equals(firstName, that.firstName) &&
+        return studentId == that.studentId &&
+                Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(phoneNumber, that.phoneNumber) &&
                 Objects.equals(courseName, that.courseName);
@@ -67,16 +79,17 @@ public class StudentDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, phoneNumber, courseName);
+        return Objects.hash(studentId, firstName, lastName, phoneNumber, courseName);
     }
 
     @Override
     public String toString() {
         return "StudentDto{" +
-                "firstName='" + firstName + '\'' +
+                "studentId=" + studentId +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", nameCourse='" + courseName + '\'' +
+                ", courseName='" + courseName + '\'' +
                 '}';
     }
 }
