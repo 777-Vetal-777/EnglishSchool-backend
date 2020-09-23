@@ -15,7 +15,6 @@ import ua.englishschool.backend.model.service.StudentService;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,8 +129,13 @@ public class ContractServiceImpl implements ContractService {
         return generateContractDto(contract.get(), student.get());
     }
 
+    @Override
+    public List<Contract> findAllByEndDateBefore(LocalDate localDate) {
+        return contractRepository.findAllByEndDateBefore(localDate);
+    }
+
     private ContractDto generateContractDto(Contract contract, Student student) {
-        String teacherName = contract.getCourse().getTeacher().getFirstName().concat(" "+contract.getCourse().getTeacher().getLastName());
+        String teacherName = contract.getCourse().getTeacher().getFirstName().concat(" " + contract.getCourse().getTeacher().getLastName());
         ContractDto contractDto = new ContractDto();
         contractDto.setStudentName(student.getFirstName());
         contractDto.setStudentLastName(student.getLastName());

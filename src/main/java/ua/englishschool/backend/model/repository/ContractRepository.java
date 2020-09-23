@@ -9,6 +9,7 @@ import ua.englishschool.backend.entity.Course;
 import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,4 +32,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query("Select Count(c) from Contract c where c.course = :course and c.contractStatusType = :type")
     int findCountByCourseAndStatus(@Param("course") Course course, @Param("type") ContractStatusType type);
+
+    @Query("Select c from Contract c where c.course.periodDate.endDate < :endDate")
+    List<Contract> findAllByEndDateBefore(LocalDate endDate);
 }

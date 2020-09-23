@@ -9,6 +9,7 @@ import ua.englishschool.backend.entity.dto.StudentDto;
 import ua.englishschool.backend.model.repository.StudentRepository;
 import ua.englishschool.backend.model.service.ContractService;
 import ua.englishschool.backend.model.service.StudentService;
+import ua.englishschool.backend.model.service.TeacherService;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -25,11 +26,17 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private ContractService contractService;
 
+    @Autowired
+    private TeacherService teacherService;
+
 
     @Override
     public Student create(Student student) {
         if (findStudentByPhone(student.getPhoneNumber()).isPresent()) {
             throw new EntityExistsException("Student with this phone is already in database: " + student.toString());
+        }
+        if (teacherService.findByPhone(student.getPhoneNumber()).isPresent()) {
+            throw new EntityNotFoundException("Teacher with this phone is already in database: " + student.getPhoneNumber());
         }
         if (student.getId() == 0) {
             return studentRepository.saveAndFlush(student);

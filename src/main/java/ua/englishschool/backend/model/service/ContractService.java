@@ -7,6 +7,7 @@ import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.entity.dto.ContractDto;
 import ua.englishschool.backend.entity.dto.CreateContractDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,5 +31,7 @@ public interface ContractService extends GenericService<Contract> {
     ContractDto findByPhone(String phone);
 
     long createContract(CreateContractDto createContractDto);
+
+    List<Contract> findAllByEndDateBefore(LocalDate localDate);
 
 }

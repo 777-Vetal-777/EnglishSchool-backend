@@ -9,8 +9,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.PeriodDate;
 import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.core.ContractStatusType;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,6 +35,8 @@ public class ContractRepositoryTest {
 
     private Student student2;
 
+    private Course course2;
+
     @Autowired
     private ContractRepository contractRepository;
 
@@ -46,6 +53,13 @@ public class ContractRepositoryTest {
         course.setMaxCapacity(20);
 
         entityManager.persistAndFlush(course);
+
+        course2 = new Course();
+        course2.setId(0);
+        course2.setName("ELEMENTARY");
+        course2.setMaxCapacity(20);
+        entityManager.persistAndFlush(course2);
+
 
         student = new Student();
         student.setId(0);
@@ -79,6 +93,20 @@ public class ContractRepositoryTest {
         contract2.setStudent(student2);
 
         entityManager.persistAndFlush(contract2);
+    }
+
+    @Test
+    void whenFindAllByEndDateBefore_ReturnList() {
+        PeriodDate periodDate = new PeriodDate();
+        periodDate.setEndDate(LocalDate.parse("2020-09-22"));
+        course2.setPeriodDate(periodDate);
+        contract2.setCourse(course2);
+        entityManager.merge(contract2);
+
+
+        List<Contract> result = contractRepository.findAllByEndDateBefore(LocalDate.now());
+
+        assertEquals(Collections.singletonList(contract2), result);
     }
 
     @Test
