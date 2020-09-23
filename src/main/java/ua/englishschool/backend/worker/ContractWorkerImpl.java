@@ -13,13 +13,16 @@ import java.util.List;
 @Component
 public class ContractWorkerImpl implements ContractWorker {
 
-    @Autowired
     private ContractService contractService;
+
+    @Autowired
+    public ContractWorkerImpl(ContractService contractService) {
+        this.contractService = contractService;
+    }
 
     @Override
     @Scheduled(cron = "${close.contracts}")
     public void closeContracts() {
-        System.out.println("go");
         List<Contract> contractList = contractService.findAllByEndDateBefore(LocalDate.now());
         for (Contract contract : contractList) {
             contract.setContractStatusType(ContractStatusType.CLOSED);
