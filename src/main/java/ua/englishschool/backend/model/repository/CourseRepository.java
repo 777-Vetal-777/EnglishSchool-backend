@@ -18,4 +18,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("Select count(c) from Course c where c.teacher = :teacher and c.periodDate.endDate> :endDate")
     int countByTeacherAndEndDateAfter(@Param("teacher") Teacher teacher, @Param("endDate") LocalDate endDate);
+
+    @Query("Select c from Course c where c.periodDate.startDate<:endDate and c.periodDate.endDate > :endDate or c.periodDate.endDate = :endDate")
+    List<Course> findAllByEndDateAfter(@Param("endDate") LocalDate endDate);
 }

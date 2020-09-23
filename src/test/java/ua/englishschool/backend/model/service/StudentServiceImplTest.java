@@ -49,6 +49,9 @@ public class StudentServiceImplTest {
     @Mock
     private ContractService contractService;
 
+    @Mock
+    private TeacherService teacherService;
+
     private Student student;
 
     private Student student2;
@@ -102,11 +105,12 @@ public class StudentServiceImplTest {
         student.setId(0);
         when(studentRepository.saveAndFlush(student)).thenReturn(student);
         when(studentRepository.findByPhoneNumber(PHONE)).thenReturn(Optional.empty());
+        when(teacherService.findByPhone(PHONE)).thenReturn(Optional.empty());
 
-        studentService.create(student);
+        Student result = studentService.create(student);
 
         verify(studentRepository).saveAndFlush(student);
-
+        assertEquals(student, result);
     }
 
     @Test

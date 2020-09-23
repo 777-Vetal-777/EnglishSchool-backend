@@ -27,14 +27,6 @@ public class ContractServiceImpl implements ContractService {
 
     private CourseService courseService;
 
-    @Autowired
-    public ContractServiceImpl(ContractRepository contractRepository,
-                               StudentService studentService, CourseService courseService) {
-        this.contractRepository = contractRepository;
-        this.studentService = studentService;
-        this.courseService = courseService;
-    }
-
     @Override
     public Contract create(Contract contract) {
         if (contract.getId() == 0) {
@@ -164,5 +156,20 @@ public class ContractServiceImpl implements ContractService {
             contract.setContractStatusType(ContractStatusType.OPEN);
         }
         return contract;
+    }
+
+    @Autowired
+    public void setContractRepository(ContractRepository contractRepository) {
+        this.contractRepository = contractRepository;
+    }
+
+    @Autowired
+    public void setStudentService(StudentService studentService) {
+        this.studentService = studentService;
+    }
+
+    @Autowired
+    public void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
     }
 }

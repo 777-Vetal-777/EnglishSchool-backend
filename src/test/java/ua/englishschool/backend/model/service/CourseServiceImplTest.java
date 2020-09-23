@@ -76,11 +76,11 @@ public class CourseServiceImplTest {
 
         courseDto = new CourseDto();
         courseDto.setCourse(course);
-        courseDto.setAvailableStudents(17);
+        courseDto.setFreeVacancies(17);
 
         courseDto2 = new CourseDto();
         courseDto2.setCourse(course2);
-        courseDto2.setAvailableStudents(14);
+        courseDto2.setFreeVacancies(14);
 
         contract = new Contract();
         contract.setId(CONTRACT_ID);
@@ -204,8 +204,7 @@ public class CourseServiceImplTest {
 
     @Test
     void whenGetAllActiveCourses_thenReturnListCoursesDto() {
-
-        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Arrays.asList(contract, contract2));
+        when(courseRepository.findAllByEndDateAfter(LocalDate.now())).thenReturn(Arrays.asList(course, course2));
         when(contractService.countByStatusOpenAndCourse(course)).thenReturn(3);
         when(contractService.countByStatusOpenAndCourse(course2)).thenReturn(3);
 

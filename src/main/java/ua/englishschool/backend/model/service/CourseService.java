@@ -4,6 +4,7 @@ import ua.englishschool.backend.entity.Course;
 import ua.englishschool.backend.entity.Teacher;
 import ua.englishschool.backend.entity.dto.CourseDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -16,4 +17,6 @@ public interface CourseService extends GenericService<Course> {
     List<CourseDto> getAllWaitCourses();
 
     int countCoursesByTeacher(Teacher teacher);
+
+    List<Course> findAllByEndDateAfter(LocalDate endDate);
 }

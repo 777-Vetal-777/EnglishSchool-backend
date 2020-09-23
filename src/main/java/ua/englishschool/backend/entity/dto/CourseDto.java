@@ -8,11 +8,11 @@ public class CourseDto {
 
     private Course course;
 
-    private int availableStudents;
+    private int freeVacancies;
 
-    public CourseDto(Course course, int availableStudents) {
+    public CourseDto(Course course, int freeVacancies) {
         this.course = course;
-        this.availableStudents = availableStudents;
+        this.freeVacancies = freeVacancies;
     }
 
     public Course getCourse() {
@@ -26,12 +26,12 @@ public class CourseDto {
         this.course = course;
     }
 
-    public int getAvailableStudents() {
-        return availableStudents;
+    public int getFreeVacancies() {
+        return freeVacancies;
     }
 
-    public void setAvailableStudents(int availableStudents) {
-        this.availableStudents = availableStudents;
+    public void setFreeVacancies(int freeVacancies) {
+        this.freeVacancies = freeVacancies;
     }
 
 
@@ -40,20 +40,20 @@ public class CourseDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CourseDto courseDto = (CourseDto) o;
-        return availableStudents == courseDto.availableStudents &&
+        return freeVacancies == courseDto.freeVacancies &&
                 Objects.equals(course, courseDto.course);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(course, availableStudents);
+        return Objects.hash(course, freeVacancies);
     }
 
     @Override
     public String toString() {
         return "CourseDto{" +
                 "course=" + course +
-                ", availableStudents=" + availableStudents +
+                ", freeVacancies=" + freeVacancies +
                 '}';
     }
 }

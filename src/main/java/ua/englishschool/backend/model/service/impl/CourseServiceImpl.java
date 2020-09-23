@@ -80,18 +80,20 @@ public class CourseServiceImpl implements CourseService {
         for (Course course : listCourses) {
             int countStudents = contractService.countByContractStatusOpenAndWaitAndCourse(course);
             listCoursesDto.add(createCourseDto(course, countStudents));
+            countStudents = 0;
         }
         return listCoursesDto;
     }
 
     @Override
+    public List<Course> findAllByEndDateAfter(LocalDate endDate) {
+        return courseRepository.findAllByEndDateAfter(LocalDate.now());
+    }
+
+    @Override
     public Set<CourseDto> getAllActiveCourses() {
-        List<Contract> contractList = contractService.getAllByStatus(ContractStatusType.OPEN);
+        List<Course> courses = findAllByEndDateAfter(LocalDate.now());
         Set<CourseDto> courseDtoList = new HashSet<>();
-        Set<Course> courses = new HashSet<>();
-        for (Contract contract : contractList) {
-            courses.add(contract.getCourse());
-        }
         for (Course course : courses) {
             int countStudents = contractService.countByStatusOpenAndCourse(course);
             courseDtoList.add(createCourseDto(course, countStudents));
@@ -115,7 +117,7 @@ public class CourseServiceImpl implements CourseService {
     private CourseDto createCourseDto(Course course, int countStudents) {
         CourseDto courseDto = new CourseDto();
         courseDto.setCourse(course);
-        courseDto.setAvailableStudents(course.getMaxCapacity() - countStudents);
+        courseDto.setFreeVacancies(course.getMaxCapacity() - countStudents);
 
         return courseDto;
     }

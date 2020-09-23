@@ -83,7 +83,7 @@ public class CourseControllerTest {
 
         courseDto = new CourseDto();
         courseDto.setCourse(course);
-        courseDto.setAvailableStudents(15);
+        courseDto.setFreeVacancies(15);
 
         courseDtoSet = new HashSet<>();
         courseDtoSet.add(courseDto);
