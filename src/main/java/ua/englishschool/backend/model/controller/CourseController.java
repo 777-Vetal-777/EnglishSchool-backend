@@ -29,11 +29,15 @@ public class CourseController {
 
     private static final String URL_GET_ALL_WAIT_DTO = URL + "/get-all/wait/dto";
 
-    @Autowired
     private CourseService courseService;
 
-    @Autowired
     private TeacherService teacherService;
+
+    @Autowired
+    public CourseController(CourseService courseService, TeacherService teacherService) {
+        this.courseService = courseService;
+        this.teacherService = teacherService;
+    }
 
     @PostMapping(URL)
     @ResponseStatus(HttpStatus.CREATED)

@@ -31,9 +31,13 @@ public class TeacherController {
     private static final String URL_GET_BY_PHONE_DTO = URL + "/dto/by-phone/{phone}";
 
     private static final String URL_CHANGE_STATUS_ACTIVE = URL + "/change-active/{teacherId}";
+    
+    private TeacherService teacherService;
 
     @Autowired
-    private TeacherService teacherService;
+    public TeacherController(TeacherService teacherService) {
+        this.teacherService = teacherService;
+    }
 
     @GetMapping(URL + "/{id}")
     public Teacher getById(@PathVariable("id") long id) {

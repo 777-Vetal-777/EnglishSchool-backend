@@ -33,9 +33,12 @@ public class StudentController {
 
     private static final String URL_FIND_ACTIVE_STUDENT_DTO = URL + "/active-students-dto";
 
-    @Autowired
     private StudentService studentService;
 
+    @Autowired
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
     @PostMapping(URL)
     @ResponseStatus(HttpStatus.CREATED)

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.englishschool.backend.entity.Contract;
@@ -22,29 +21,31 @@ import ua.englishschool.backend.model.service.ContractService;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class ContractController {
 
     private static final String URL = "/contracts";
 
-    private static final String GET_BY_ID = URL + "/{id}";
+    private static final String URL_GET_BY_ID = URL + "/{id}";
 
     private static final String URL_CREATE_CONTRACT_DTO = URL + "/create-contract";
 
-    private static final String DELETE_BY_ID = URL + "/{id}";
+    private static final String URL_DELETE_BY_ID = URL + "/{id}";
 
-    private static final String GET_ALL_WITH_STATUS_OPEN = URL + "/active";
+    private static final String URL_GET_ALL_STATUS_OPEN = URL + "/active";
 
     private static final String URL_FIND_BY_PHONE = URL + "/find-by-phone/{phone}";
 
-    @Autowired
     private ContractService contractService;
 
-    @Autowired
     private Logger logger;
 
+    @Autowired
+    public ContractController(ContractService contractService, Logger logger) {
+        this.contractService = contractService;
+        this.logger = logger;
+    }
 
     @PostMapping(URL)
     @ResponseStatus(HttpStatus.CREATED)
@@ -65,7 +66,7 @@ public class ContractController {
         return contractService.createContract(createContractDto);
     }
 
-    @GetMapping(GET_BY_ID)
+    @GetMapping(URL_GET_BY_ID)
     public Contract getById(@PathVariable("id") long id) {
         return contractService.getById(id).orElseThrow(() -> new EntityNotFoundException("Contract was not found with id: " + id));
     }
@@ -75,7 +76,7 @@ public class ContractController {
         return contractService.getAll();
     }
 
-    @DeleteMapping(DELETE_BY_ID)
+    @DeleteMapping(URL_DELETE_BY_ID)
     public void deleteById(@PathVariable("id") long id) {
         if (!contractService.delete(id)) {
             throw new EntityNotFoundException("Contract was not deleted with id: " + id);
@@ -89,7 +90,7 @@ public class ContractController {
         }
     }
 
-    @GetMapping(GET_ALL_WITH_STATUS_OPEN)
+    @GetMapping(URL_GET_ALL_STATUS_OPEN)
     public List<Contract> getAllStatusOpen() {
         return contractService.getAllByStatus(ContractStatusType.OPEN);
     }
