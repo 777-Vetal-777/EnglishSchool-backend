@@ -19,11 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class TeacherServiceImpl implements TeacherService {
 
-    @Autowired
     private TeacherRepository teacherRepository;
 
-    @Autowired
     private CourseService courseService;
+
+    @Autowired
+    public TeacherServiceImpl(TeacherRepository teacherRepository, CourseService courseService) {
+        this.teacherRepository = teacherRepository;
+        this.courseService = courseService;
+    }
 
     @Override
     public Teacher create(Teacher teacher) {

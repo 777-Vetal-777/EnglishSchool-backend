@@ -21,15 +21,19 @@ import java.util.Optional;
 @Service
 public class ContractServiceImpl implements ContractService {
 
-    @Autowired
     private ContractRepository contractRepository;
 
-    @Autowired
     private StudentService studentService;
 
-    @Autowired
     private CourseService courseService;
 
+    @Autowired
+    public ContractServiceImpl(ContractRepository contractRepository,
+                               StudentService studentService, CourseService courseService) {
+        this.contractRepository = contractRepository;
+        this.studentService = studentService;
+        this.courseService = courseService;
+    }
 
     @Override
     public Contract create(Contract contract) {

@@ -12,8 +12,12 @@ import java.util.Optional;
 @Service
 public class StudentInvoiceServiceImpl implements StudentInvoiceService {
 
-    @Autowired
     private StudentInvoiceRepository studentInvoiceRepository;
+
+    @Autowired
+    public StudentInvoiceServiceImpl(StudentInvoiceRepository studentInvoiceRepository) {
+        this.studentInvoiceRepository = studentInvoiceRepository;
+    }
 
     @Override
     public StudentInvoice create(StudentInvoice studentInvoice) {

@@ -20,15 +20,19 @@ import java.util.stream.Collectors;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    @Autowired
     private StudentRepository studentRepository;
 
-    @Autowired
     private ContractService contractService;
 
-    @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    public StudentServiceImpl(StudentRepository studentRepository,
+                              ContractService contractService, TeacherService teacherService) {
+        this.studentRepository = studentRepository;
+        this.contractService = contractService;
+        this.teacherService = teacherService;
+    }
 
     @Override
     public Student create(Student student) {
