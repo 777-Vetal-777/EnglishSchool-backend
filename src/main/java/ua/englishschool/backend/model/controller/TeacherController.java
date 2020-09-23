@@ -32,6 +32,8 @@ public class TeacherController {
 
     private static final String URL_CHANGE_STATUS_ACTIVE = URL + "/change-active/{teacherId}";
 
+    private static final String URL_FIND_ACTIVE = URL + "/active/{active}";
+
     private TeacherService teacherService;
 
     @Autowired
@@ -50,7 +52,7 @@ public class TeacherController {
         teacher.setRole(RoleType.TEACHER);
         Optional<Teacher> teacherOptional = teacherService.findByPhone(teacher.getPhoneNumber());
         if (teacherOptional.isPresent()) {
-          throw new EntityExistsException("Teacher is existed");
+            throw new EntityExistsException("Teacher is existed");
         }
         return teacherService.create(teacher).getId();
     }
@@ -89,4 +91,10 @@ public class TeacherController {
 
         return teacherService.changeStatusActive(id);
     }
+
+    @GetMapping(URL_FIND_ACTIVE)
+    public List<TeacherDto> findByActive(@PathVariable("active") boolean active) {
+        return teacherService.findByActiveDto(active);
+    }
+
 }

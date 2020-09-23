@@ -41,6 +41,8 @@ public class TeacherControllerTest {
 
     private static final String URL_CHANGE_STATUS_ACTIVE = URL + "/change-active/{teacherId}";
 
+    private static final String URL_FIND_ACTIVE = URL + "/active/{active}";
+
     private static final long TEACHER_ID = 1;
 
     private static final String PHONE = "12345";
@@ -201,6 +203,16 @@ public class TeacherControllerTest {
         server.perform(put(URL_CHANGE_STATUS_ACTIVE, TEACHER_ID))
                 .andDo(print())
                 .andExpect(content().string(String.valueOf(false)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findByActive_ReturnListTeacherDto() throws Exception {
+        when(teacherService.findByActiveDto(true)).thenReturn(Collections.singletonList(teacherDto));
+
+        server.perform(get(URL_FIND_ACTIVE, true))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(Collections.singletonList(teacherDto))))
                 .andExpect(status().isOk());
     }
 

@@ -100,6 +100,16 @@ public class TeacherServiceImpl implements TeacherService {
         return Optional.ofNullable(getRandomTeacher(freeTeachers));
     }
 
+    @Override
+    public List<TeacherDto> findByActiveDto(boolean active) {
+        List<Teacher> teachers = findByActive(active);
+        List<TeacherDto> teacherDtos = new ArrayList<>();
+        for (Teacher teacher : teachers) {
+            teacherDtos.add(fillTeacherDto(teacher));
+        }
+        return teacherDtos;
+    }
+
     private Teacher getRandomTeacher(List<FreeTeacher> freeTeachers) {
         List<FreeTeacher> freeTeachersSame = new ArrayList<>();
         if (freeTeachers.isEmpty()) {
@@ -125,7 +135,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public List<Teacher> findByActive(boolean active) {
-        return teacherRepository.findAllByActive(true);
+        return teacherRepository.findAllByActive(active);
     }
 
 

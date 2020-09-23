@@ -270,4 +270,14 @@ public class TeacherServiceImplTest {
         assertEquals(teacher, result.get());
     }
 
+    @Test
+    void whenFindByActiveDto_thenReturnListDto() {
+        when(teacherRepository.findAllByActive(true)).thenReturn(Arrays.asList(teacher, teacher2));
+        when(courseService.countCoursesByTeacher(teacher)).thenReturn(3);
+        when(courseService.countCoursesByTeacher(teacher2)).thenReturn(5);
+        List<TeacherDto> teacherDtos = teacherService.findByActiveDto(true);
+
+        assertEquals(Arrays.asList(teacherDto, teacherDto2), teacherDtos);
+    }
+
 }
