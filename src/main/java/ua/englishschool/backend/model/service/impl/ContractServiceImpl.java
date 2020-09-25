@@ -75,6 +75,11 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public List<Contract> findAllByWaitAndStartDateBefore(LocalDate localDate) {
+        return contractRepository.findAllByWaitAndStartDateBefore(localDate);
+    }
+
+    @Override
     public boolean isExists(long id) {
         return contractRepository.existsById(id);
     }

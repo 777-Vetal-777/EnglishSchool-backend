@@ -33,4 +33,6 @@ public interface ContractService extends GenericService<Contract> {
     long createContract(CreateContractDto createContractDto);
 
     List<Contract> findAllByEndDateBefore(LocalDate localDate);
+
+    List<Contract> findAllByWaitAndStartDateBefore(LocalDate localDate);
 }

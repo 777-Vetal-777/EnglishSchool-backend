@@ -40,7 +40,7 @@ public class Contract {
     @Enumerated(EnumType.STRING)
     private ContractStatusType contractStatusType;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id", foreignKey = @ForeignKey(name = "FK_student_invoices_contracts"))
     private List<StudentInvoice> studentInvoices = new ArrayList<>();
 

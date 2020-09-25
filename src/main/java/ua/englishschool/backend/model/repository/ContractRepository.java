@@ -33,6 +33,9 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("Select Count(c) from Contract c where c.course = :course and c.contractStatusType = :type")
     int findCountByCourseAndStatus(@Param("course") Course course, @Param("type") ContractStatusType type);
 
-    @Query("Select c from Contract c where c.course.periodDate.endDate < :endDate")
-    List<Contract> findAllByEndDateBefore(LocalDate endDate);
+    @Query("Select c from Contract c where c.course.periodDate.endDate < :localDate")
+    List<Contract> findAllByEndDateBefore(LocalDate localDate);
+
+    @Query("Select c from Contract c where c.contractStatusType = 'WAIT' and (c.course.periodDate.startDate <:localDate or c.course.periodDate.startDate =:localDate)")
+    List<Contract> findAllByWaitAndStartDateBefore(LocalDate localDate);
 }

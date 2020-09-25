@@ -29,4 +29,14 @@ public class ContractWorkerImpl implements ContractWorker {
             contractService.update(contract);
         }
     }
+
+    @Override
+    @Scheduled(cron = "${open.contracts}")
+    public void openContracts() {
+        List<Contract> contractList = contractService.findAllByWaitAndStartDateBefore(LocalDate.now());
+        for (Contract contract : contractList) {
+            contract.setContractStatusType(ContractStatusType.OPEN);
+            contractService.update(contract);
+        }
+    }
 }
