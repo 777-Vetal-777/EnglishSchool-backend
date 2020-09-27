@@ -233,7 +233,7 @@ public class StudentServiceImplTest {
 
     @Test
     void whenFindActiveStudents_thenReturnListStudentsDto() {
-        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.singletonList(contract));
+        when(contractService.findAllByStatusOpenAndWait()).thenReturn(Collections.singletonList(contract));
 
         List<StudentDto> result = studentService.findActiveStudentsDto();
 
@@ -242,7 +242,7 @@ public class StudentServiceImplTest {
 
     @Test
     void whenFindActiveStudents_thenReturnListEmpty() {
-        when(contractService.getAllByStatus(ContractStatusType.OPEN)).thenReturn(Collections.emptyList());
+        when(contractService.findAllByStatusOpenAndWait()).thenReturn(Collections.emptyList());
 
         List<StudentDto> result = studentService.findActiveStudentsDto();
 

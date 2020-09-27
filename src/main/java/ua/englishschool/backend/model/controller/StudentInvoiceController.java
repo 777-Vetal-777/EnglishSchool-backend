@@ -15,14 +15,16 @@ public class StudentInvoiceController {
 
     private static final String URL = "/invoices";
 
-    private static final String URL_UNPAID = URL + "/unpaid";
+    private static final String URL_WAIT_INVOICES = URL + "/wait";
+
+    private static final String URL_UNPAID_BY_PHONE = URL + "/unpaid-by-phone/{phone}";
 
     private static final String URL_PAYMENT = URL + "/payment/{invoiceId}";
 
     @Autowired
     private StudentInvoiceService studentInvoiceService;
 
-    @GetMapping(URL_UNPAID)
+    @GetMapping(URL_WAIT_INVOICES)
     public List<StudentInvoiceDto> getUnpaidInvoices() {
         List<StudentInvoiceDto> studentInvoices = studentInvoiceService.getUnpaidInvoices();
         return studentInvoices;
@@ -31,5 +33,10 @@ public class StudentInvoiceController {
     @PutMapping(URL_PAYMENT)
     public boolean payment(@PathVariable long invoiceId) {
         return studentInvoiceService.payment(invoiceId);
+    }
+
+    @GetMapping(URL_UNPAID_BY_PHONE)
+    public List<StudentInvoiceDto> getAllUnpaidByPhone(@PathVariable String phone) {
+        return studentInvoiceService.getAllOpenAndWaitByPhone(phone);
     }
 }

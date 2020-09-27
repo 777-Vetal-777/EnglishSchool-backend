@@ -38,8 +38,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class StudentInvoiceServiceImplTest {
 
-    private static final long STUDENT_INVOICE_ID = 1;
-
     @InjectMocks
     private StudentInvoiceServiceImpl studentInvoiceService;
 
@@ -48,6 +46,9 @@ public class StudentInvoiceServiceImplTest {
 
     @Mock
     private ContractService contractService;
+
+    @Mock
+    private StudentService studentService;
 
     private StudentInvoice studentInvoice;
 
@@ -63,13 +64,16 @@ public class StudentInvoiceServiceImplTest {
 
     private Course course;
 
+    private static final long STUDENT_INVOICE_ID = 1;
+    private static final String PHONE = "12345";
+
     @BeforeEach
     void setUp() {
 
         student = new Student();
         student.setFirstName("FirstName");
         student.setLastName("LastName");
-        student.setPhoneNumber("12345");
+        student.setPhoneNumber(PHONE);
         periodDate = new PeriodDate();
         periodDate.setStartDate(LocalDate.parse("2020-09-10"));
         periodDate.setEndDate(LocalDate.parse("2020-09-25"));
@@ -226,10 +230,11 @@ public class StudentInvoiceServiceImplTest {
 
         assertEquals(true, result);
     }
+
     @Test
     void whenPayment_thenReturnExceptionNotFound() {
         when(studentInvoiceRepository.findById(STUDENT_INVOICE_ID)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () ->{
+        assertThrows(EntityNotFoundException.class, () -> {
             boolean result = studentInvoiceService.payment(STUDENT_INVOICE_ID);
 
         });
@@ -237,10 +242,39 @@ public class StudentInvoiceServiceImplTest {
     }
 
     @Test
+    void whenGetAllOpenAndWaitByPhone_thenReturnList() {
+        when(studentService.findStudentByPhone(PHONE)).thenReturn(Optional.ofNullable(student));
+        when(contractService.findByStudentAndStatusOpenOrWait(student)).thenReturn(Optional.ofNullable(contract));
+
+        List<StudentInvoiceDto> invoices = studentInvoiceService.getAllOpenAndWaitByPhone(PHONE);
+
+        assertEquals(Collections.singletonList(studentInvoiceDto), invoices);
+    }
+
+    @Test
+    void whenGetAllOpenAndWaitByPhone_thenReturnStudentException() {
+        when(studentService.findStudentByPhone(PHONE)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            studentInvoiceService.getAllOpenAndWaitByPhone(PHONE);
+        });
+    }
+
+    @Test
+    void whenGetAllOpenAndWaitByPhone_thenReturnContractException() {
+        when(studentService.findStudentByPhone(PHONE)).thenReturn(Optional.ofNullable(student));
+        when(contractService.findByStudentAndStatusOpenOrWait(student)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            studentInvoiceService.getAllOpenAndWaitByPhone(PHONE);
+        });
+    }
+
+    @Test
     void whenPayment_thenReturnExceptionUpdate() {
         when(studentInvoiceRepository.findById(STUDENT_INVOICE_ID)).thenReturn(Optional.ofNullable(studentInvoice));
         when(studentInvoiceRepository.existsById(STUDENT_INVOICE_ID)).thenReturn(false);
-        assertThrows(UpdateEntityException.class, () ->{
+        assertThrows(UpdateEntityException.class, () -> {
             boolean result = studentInvoiceService.payment(STUDENT_INVOICE_ID);
 
         });

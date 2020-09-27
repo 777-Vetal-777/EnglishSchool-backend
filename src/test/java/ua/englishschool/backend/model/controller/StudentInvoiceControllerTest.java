@@ -14,6 +14,7 @@ import ua.englishschool.backend.entity.dto.StudentInvoiceDto;
 import ua.englishschool.backend.model.service.StudentInvoiceService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -29,9 +30,11 @@ public class StudentInvoiceControllerTest {
 
     private static final String URL = "/invoices";
 
-    private static final String URL_UNPAID = URL + "/unpaid";
+    private static final String URL_WAIT_INVOICES = URL + "/wait";
 
     private static final String URL_PAYMENT = URL + "/payment/{invoiceId}";
+
+    private static final String URL_UNPAID_BY_PHONE = URL + "/unpaid-by-phone/{phone}";
 
     @Autowired
     private MockMvc server;
@@ -57,7 +60,7 @@ public class StudentInvoiceControllerTest {
     void getUnpaidInvoices_ReturnList() throws Exception {
         when(studentInvoiceService.getUnpaidInvoices()).thenReturn(invoiceList);
 
-        server.perform(get(URL_UNPAID))
+        server.perform(get(URL_WAIT_INVOICES))
                 .andDo(print())
                 .andExpect(content().json(asJsonString(invoiceList)))
                 .andExpect(status().isOk());
@@ -73,6 +76,15 @@ public class StudentInvoiceControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void getAllUnpaidByPhone_ReturnList() throws Exception {
+        when(studentInvoiceService.getAllOpenAndWaitByPhone("12345")).thenReturn(Collections.singletonList(studentInvoiceDto));
+
+        server.perform(get(URL_UNPAID_BY_PHONE, "12345"))
+                .andDo(print())
+                .andExpect(content().json(asJsonString(Collections.singletonList(studentInvoiceDto))))
+                .andExpect(status().isOk());
+    }
 
     private String asJsonString(final Object obj) {
         try {

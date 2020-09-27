@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.PeriodDate;
+import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.StudentInvoice;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.entity.core.StudentInvoiceType;
@@ -12,12 +13,14 @@ import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.repository.StudentInvoiceRepository;
 import ua.englishschool.backend.model.service.ContractService;
 import ua.englishschool.backend.model.service.StudentInvoiceService;
+import ua.englishschool.backend.model.service.StudentService;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentInvoiceServiceImpl implements StudentInvoiceService {
@@ -26,10 +29,13 @@ public class StudentInvoiceServiceImpl implements StudentInvoiceService {
 
     private ContractService contractService;
 
+    private StudentService studentService;
+
     @Autowired
-    public StudentInvoiceServiceImpl(StudentInvoiceRepository studentInvoiceRepository, ContractService contractService) {
+    public StudentInvoiceServiceImpl(StudentInvoiceRepository studentInvoiceRepository, ContractService contractService, StudentService studentService) {
         this.studentInvoiceRepository = studentInvoiceRepository;
         this.contractService = contractService;
+        this.studentService = studentService;
     }
 
     @Override
@@ -86,6 +92,21 @@ public class StudentInvoiceServiceImpl implements StudentInvoiceService {
 
         }
         return unpaidStudentInvoices;
+    }
+
+    @Override
+    public List<StudentInvoiceDto> getAllOpenAndWaitByPhone(String phone) {
+        Optional<Student> student = studentService.findStudentByPhone(phone);
+        student.orElseThrow(() -> new EntityNotFoundException("Student was not found with phone: " + phone));
+        Optional<Contract> contract = contractService.findByStudentAndStatusOpenOrWait(student.get());
+        contract.orElseThrow(() -> new EntityNotFoundException("Contract was not found for student: " + student.get().toString()));
+
+        List<StudentInvoice> studentInvoices = contract.get().getStudentInvoices().stream()
+                .filter(studentInvoice -> studentInvoice.getType() == StudentInvoiceType.OPEN ||
+                        studentInvoice.getType() == StudentInvoiceType.WAIT)
+                .collect(Collectors.toList());
+
+        return getStudentInvoicesDto(studentInvoices, contract.get());
     }
 
     @Override
@@ -147,6 +168,14 @@ public class StudentInvoiceServiceImpl implements StudentInvoiceService {
         }
         return contract.getCourse().getPeriodDate().getEndDate().toEpochDay() - LocalDate.now().toEpochDay();
 
+    }
+
+    private List<StudentInvoiceDto> getStudentInvoicesDto(List<StudentInvoice> invoices, Contract contract) {
+        List<StudentInvoiceDto> invoicesDto = new ArrayList<>();
+        for (StudentInvoice studentInvoice : invoices) {
+            invoicesDto.add(generateStudentInvoiceDto(contract, studentInvoice));
+        }
+        return invoicesDto;
     }
 
     private StudentInvoiceDto generateStudentInvoiceDto(Contract contract, StudentInvoice studentInvoice) {
