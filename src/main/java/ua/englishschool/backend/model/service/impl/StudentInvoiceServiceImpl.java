@@ -8,10 +8,12 @@ import ua.englishschool.backend.entity.StudentInvoice;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.entity.core.StudentInvoiceType;
 import ua.englishschool.backend.entity.dto.StudentInvoiceDto;
+import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.repository.StudentInvoiceRepository;
 import ua.englishschool.backend.model.service.ContractService;
 import ua.englishschool.backend.model.service.StudentInvoiceService;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +107,20 @@ public class StudentInvoiceServiceImpl implements StudentInvoiceService {
             invoiceList.add(studentInvoice);
         }
         return invoiceList;
+    }
+
+    @Override
+    public boolean payment(long invoiceId) {
+        Optional<StudentInvoice> studentInvoice = getById(invoiceId);
+        if (studentInvoice.isEmpty()) {
+            throw new EntityNotFoundException("Invoice was not found with id: " + invoiceId);
+        }
+        studentInvoice.get().setType(StudentInvoiceType.CLOSED);
+        studentInvoice.get().setPaymentDate(LocalDate.now());
+        if (!update(studentInvoice.get())) {
+            throw new UpdateEntityException("Invoice was not updated with id: " + invoiceId);
+        }
+        return true;
     }
 
     private StudentInvoice generateFirstStudentInvoice(Contract contract, long daysToNextPayment) {

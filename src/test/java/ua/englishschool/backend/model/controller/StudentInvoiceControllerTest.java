@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +30,8 @@ public class StudentInvoiceControllerTest {
     private static final String URL = "/invoices";
 
     private static final String URL_UNPAID = URL + "/unpaid";
+
+    private static final String URL_PAYMENT = URL + "/payment/{invoiceId}";
 
     @Autowired
     private MockMvc server;
@@ -59,6 +62,17 @@ public class StudentInvoiceControllerTest {
                 .andExpect(content().json(asJsonString(invoiceList)))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void payment_ReturnTrue() throws Exception {
+        when(studentInvoiceService.payment(10)).thenReturn(true);
+
+        server.perform(put(URL_PAYMENT, 10))
+                .andDo(print())
+                .andExpect(content().string(String.valueOf(true)))
+                .andExpect(status().isOk());
+    }
+
 
     private String asJsonString(final Object obj) {
         try {

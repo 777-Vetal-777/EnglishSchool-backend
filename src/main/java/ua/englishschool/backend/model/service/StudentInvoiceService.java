@@ -11,4 +11,6 @@ public interface StudentInvoiceService extends GenericService<StudentInvoice> {
     List<StudentInvoiceDto> getUnpaidInvoices();
 
     List<StudentInvoice> generateStudentInvoices(Contract contract);
+
+    boolean payment(long invoiceId);
 }

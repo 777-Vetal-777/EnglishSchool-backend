@@ -15,9 +15,11 @@ import ua.englishschool.backend.entity.StudentInvoice;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.entity.core.StudentInvoiceType;
 import ua.englishschool.backend.entity.dto.StudentInvoiceDto;
+import ua.englishschool.backend.entity.exception.UpdateEntityException;
 import ua.englishschool.backend.model.repository.StudentInvoiceRepository;
 import ua.englishschool.backend.model.service.impl.StudentInvoiceServiceImpl;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +28,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,7 +52,7 @@ public class StudentInvoiceServiceImplTest {
     private StudentInvoice studentInvoice;
 
     private StudentInvoice studentInvoice2;
-    
+
     private Contract contract;
 
     private StudentInvoiceDto studentInvoiceDto;
@@ -98,7 +102,7 @@ public class StudentInvoiceServiceImplTest {
         studentInvoiceDto.setPhone(student.getPhoneNumber());
         studentInvoiceDto.setCourseName(course.getName());
 
-         studentInvoice2 = new StudentInvoice();
+        studentInvoice2 = new StudentInvoice();
         studentInvoice2.setType(StudentInvoiceType.WAIT);
         studentInvoice2.setPeriod(periodDate);
         studentInvoice2.setMoney(858);
@@ -202,8 +206,8 @@ public class StudentInvoiceServiceImplTest {
     @Test
     void whenGenerateStudentInvoices_thenReturnList() {
         contract.setStudentInvoices(Collections.emptyList());
-        periodDate.setStartDate(LocalDate.parse("2021-05-10"));
-        periodDate.setEndDate(LocalDate.parse("2021-06-05"));
+        periodDate.setStartDate(LocalDate.parse("2050-05-10"));
+        periodDate.setEndDate(LocalDate.parse("2050-06-05"));
         StudentInvoice studentInvoice = new StudentInvoice();
         studentInvoice.setType(StudentInvoiceType.WAIT);
         studentInvoice.setPeriod(periodDate);
@@ -211,5 +215,35 @@ public class StudentInvoiceServiceImplTest {
         List<StudentInvoice> invoiceList = studentInvoiceService.generateStudentInvoices(contract);
 
         assertEquals(Collections.singletonList(studentInvoice2), invoiceList);
+    }
+
+    @Test
+    void whenPayment_thenReturnTrue() {
+        when(studentInvoiceRepository.findById(STUDENT_INVOICE_ID)).thenReturn(Optional.ofNullable(studentInvoice));
+        when(studentInvoiceRepository.existsById(STUDENT_INVOICE_ID)).thenReturn(true);
+        when(studentInvoiceRepository.saveAndFlush(studentInvoice)).thenReturn(studentInvoice);
+        boolean result = studentInvoiceService.payment(STUDENT_INVOICE_ID);
+
+        assertEquals(true, result);
+    }
+    @Test
+    void whenPayment_thenReturnExceptionNotFound() {
+        when(studentInvoiceRepository.findById(STUDENT_INVOICE_ID)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () ->{
+            boolean result = studentInvoiceService.payment(STUDENT_INVOICE_ID);
+
+        });
+
+    }
+
+    @Test
+    void whenPayment_thenReturnExceptionUpdate() {
+        when(studentInvoiceRepository.findById(STUDENT_INVOICE_ID)).thenReturn(Optional.ofNullable(studentInvoice));
+        when(studentInvoiceRepository.existsById(STUDENT_INVOICE_ID)).thenReturn(false);
+        assertThrows(UpdateEntityException.class, () ->{
+            boolean result = studentInvoiceService.payment(STUDENT_INVOICE_ID);
+
+        });
+
     }
 }

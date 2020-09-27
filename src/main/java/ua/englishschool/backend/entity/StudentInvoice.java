@@ -31,9 +31,6 @@ public class StudentInvoice {
     private int money;
 
     @Column
-    private boolean payed;
-
-    @Column
     @Enumerated(EnumType.STRING)
     private StudentInvoiceType type;
 
@@ -69,14 +66,6 @@ public class StudentInvoice {
         this.money = money;
     }
 
-    public boolean isPayed() {
-        return payed;
-    }
-
-    public void setPayed(boolean payed) {
-        this.payed = payed;
-    }
-
     public StudentInvoiceType getType() {
         return type;
     }
@@ -92,7 +81,6 @@ public class StudentInvoice {
         StudentInvoice that = (StudentInvoice) o;
         return id == that.id &&
                 money == that.money &&
-                payed == that.payed &&
                 Objects.equals(period, that.period) &&
                 Objects.equals(paymentDate, that.paymentDate) &&
                 type == that.type;
@@ -100,7 +88,7 @@ public class StudentInvoice {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, period, paymentDate, money, payed, type);
+        return Objects.hash(id, period, paymentDate, money, type);
     }
 
     @Override
@@ -110,7 +98,6 @@ public class StudentInvoice {
                 ", period=" + period +
                 ", paymentDate=" + paymentDate +
                 ", money=" + money +
-                ", payed=" + payed +
                 ", type=" + type +
                 '}';
     }
