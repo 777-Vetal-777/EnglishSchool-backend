@@ -50,6 +50,9 @@ public class ContractServiceImplTest {
     @Mock
     private StudentService studentService;
 
+    @Mock
+    private StudentInvoiceService studentInvoiceService;
+
     private static final long CONTRACT_ID = 1;
 
     private static final long COURSE_ID = 2;
@@ -249,7 +252,7 @@ public class ContractServiceImplTest {
         when(courseService.getById(COURSE_ID)).thenReturn(Optional.ofNullable(course));
         when(studentService.getById(STUDENT_ID)).thenReturn(Optional.ofNullable(student));
         when(contractRepository.saveAndFlush(any(Contract.class))).thenReturn(contract);
-
+        when(studentInvoiceService.generateStudentInvoices(any(Contract.class))).thenReturn(Collections.emptyList());
         long result = contractService.createContract(createContractDto);
 
         verify(contractRepository).saveAndFlush(captor.capture());

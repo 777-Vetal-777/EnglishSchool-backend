@@ -14,6 +14,7 @@ import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -147,6 +148,15 @@ public class ContractRepositoryTest {
         int count = contractRepository.findCountByStatusOpenAndWaitAndCourse(course);
 
         assertEquals(1, count);
+    }
+
+    @Test
+    void whenFindAllByStatusTypeOpenAndWait_thenReturnList() {
+        contract.setContractStatusType(ContractStatusType.WAIT);
+        entityManager.merge(contract);
+        List<Contract> contracts = contractRepository.findAllByStatusTypeOpenAndWait();
+
+        assertEquals(Arrays.asList(contract, contract2), contracts);
     }
 
 

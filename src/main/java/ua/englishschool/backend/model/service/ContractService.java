@@ -35,4 +35,6 @@ public interface ContractService extends GenericService<Contract> {
     List<Contract> findAllByEndDateBefore(LocalDate localDate);
 
     List<Contract> findAllByWaitAndStartDateBefore(LocalDate localDate);
+
+    List<Contract> findAllByStatusOpenAndWait();
 }

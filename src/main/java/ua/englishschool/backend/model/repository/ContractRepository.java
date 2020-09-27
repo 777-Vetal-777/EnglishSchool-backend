@@ -38,4 +38,8 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query("Select c from Contract c where c.contractStatusType = 'WAIT' and (c.course.periodDate.startDate <:localDate or c.course.periodDate.startDate =:localDate)")
     List<Contract> findAllByWaitAndStartDateBefore(LocalDate localDate);
+
+    @Query("Select c from Contract c where c.contractStatusType = 'OPEN' or c.contractStatusType = 'WAIT'")
+    List<Contract> findAllByStatusTypeOpenAndWait();
+
 }

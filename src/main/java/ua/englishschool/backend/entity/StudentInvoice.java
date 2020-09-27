@@ -4,11 +4,13 @@ import ua.englishschool.backend.entity.core.StudentInvoiceType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -23,7 +25,7 @@ public class StudentInvoice {
     private PeriodDate period;
 
     @Column(name = "payment_date")
-    private Timestamp paymentDate;
+    private LocalDate paymentDate;
 
     @Column
     private int money;
@@ -32,6 +34,7 @@ public class StudentInvoice {
     private boolean payed;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private StudentInvoiceType type;
 
     public long getId() {
@@ -50,11 +53,11 @@ public class StudentInvoice {
         this.period = period;
     }
 
-    public Timestamp getPaymentDate() {
+    public LocalDate getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(Timestamp paymentDate) {
+    public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
     }
 

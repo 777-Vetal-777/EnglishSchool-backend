@@ -7,10 +7,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ua.englishschool.backend.entity.Contract;
+import ua.englishschool.backend.entity.Course;
+import ua.englishschool.backend.entity.PeriodDate;
+import ua.englishschool.backend.entity.Student;
 import ua.englishschool.backend.entity.StudentInvoice;
+import ua.englishschool.backend.entity.core.ContractStatusType;
+import ua.englishschool.backend.entity.core.StudentInvoiceType;
+import ua.englishschool.backend.entity.dto.StudentInvoiceDto;
 import ua.englishschool.backend.model.repository.StudentInvoiceRepository;
 import ua.englishschool.backend.model.service.impl.StudentInvoiceServiceImpl;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -33,13 +42,67 @@ public class StudentInvoiceServiceImplTest {
     @Mock
     private StudentInvoiceRepository studentInvoiceRepository;
 
+    @Mock
+    private ContractService contractService;
+
     private StudentInvoice studentInvoice;
+
+    private StudentInvoice studentInvoice2;
+    
+    private Contract contract;
+
+    private StudentInvoiceDto studentInvoiceDto;
+
+    private PeriodDate periodDate;
+
+    private Student student;
+
+    private Course course;
 
     @BeforeEach
     void setUp() {
+
+        student = new Student();
+        student.setFirstName("FirstName");
+        student.setLastName("LastName");
+        student.setPhoneNumber("12345");
+        periodDate = new PeriodDate();
+        periodDate.setStartDate(LocalDate.parse("2020-09-10"));
+        periodDate.setEndDate(LocalDate.parse("2020-09-25"));
+
+        course = new Course();
+        course.setName("Course1");
+        course.setPrice(1000);
+        course.setPeriodDate(periodDate);
+
         studentInvoice = new StudentInvoice();
         studentInvoice.setId(STUDENT_INVOICE_ID);
         studentInvoice.setMoney(10000);
+        studentInvoice.setPeriod(periodDate);
+        studentInvoice.setType(StudentInvoiceType.WAIT);
+
+        contract = new Contract();
+        contract.setId(1);
+        contract.setStudentInvoices(Arrays.asList(studentInvoice));
+        contract.setStudent(student);
+        contract.setCourse(course);
+        contract.setContractStatusType(ContractStatusType.WAIT);
+
+        studentInvoiceDto = new StudentInvoiceDto();
+        studentInvoiceDto.setInvoiceId(1);
+        studentInvoiceDto.setMoney(10000);
+        studentInvoiceDto.setStartDate(periodDate.getStartDate());
+        studentInvoiceDto.setEndDate(periodDate.getEndDate());
+        studentInvoiceDto.setFirstName(student.getFirstName());
+        studentInvoiceDto.setLastName(student.getLastName());
+        studentInvoiceDto.setPhone(student.getPhoneNumber());
+        studentInvoiceDto.setCourseName(course.getName());
+
+         studentInvoice2 = new StudentInvoice();
+        studentInvoice2.setType(StudentInvoiceType.WAIT);
+        studentInvoice2.setPeriod(periodDate);
+        studentInvoice2.setMoney(858);
+
 
     }
 
@@ -125,5 +188,28 @@ public class StudentInvoiceServiceImplTest {
         studentInvoiceService.isExists(STUDENT_INVOICE_ID);
 
         verify(studentInvoiceRepository).existsById(STUDENT_INVOICE_ID);
+    }
+
+    @Test
+    void whenGetUnpaidInvoices_thenReturnList() {
+        when(contractService.findAllByStatusOpenAndWait()).thenReturn(Collections.singletonList(contract));
+
+        List<StudentInvoiceDto> result = studentInvoiceService.getUnpaidInvoices();
+
+        assertEquals(Collections.singletonList(studentInvoiceDto), result);
+    }
+
+    @Test
+    void whenGenerateStudentInvoices_thenReturnList() {
+        contract.setStudentInvoices(Collections.emptyList());
+        periodDate.setStartDate(LocalDate.parse("2021-05-10"));
+        periodDate.setEndDate(LocalDate.parse("2021-06-05"));
+        StudentInvoice studentInvoice = new StudentInvoice();
+        studentInvoice.setType(StudentInvoiceType.WAIT);
+        studentInvoice.setPeriod(periodDate);
+        studentInvoice.setMoney(429);
+        List<StudentInvoice> invoiceList = studentInvoiceService.generateStudentInvoices(contract);
+
+        assertEquals(Collections.singletonList(studentInvoice2), invoiceList);
     }
 }

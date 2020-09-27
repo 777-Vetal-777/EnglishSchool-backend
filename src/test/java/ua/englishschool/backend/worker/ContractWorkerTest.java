@@ -12,6 +12,7 @@ import ua.englishschool.backend.entity.Course;
 import ua.englishschool.backend.entity.PeriodDate;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.model.service.ContractService;
+import ua.englishschool.backend.worker.workerImpl.ContractWorkerImpl;
 
 import java.time.LocalDate;
 import java.util.Arrays;

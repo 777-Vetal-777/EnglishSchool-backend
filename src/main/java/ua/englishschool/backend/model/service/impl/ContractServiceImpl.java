@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.Course;
 import ua.englishschool.backend.entity.Student;
+import ua.englishschool.backend.entity.StudentInvoice;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.entity.dto.ContractDto;
 import ua.englishschool.backend.entity.dto.CreateContractDto;
 import ua.englishschool.backend.model.repository.ContractRepository;
 import ua.englishschool.backend.model.service.ContractService;
 import ua.englishschool.backend.model.service.CourseService;
+import ua.englishschool.backend.model.service.StudentInvoiceService;
 import ua.englishschool.backend.model.service.StudentService;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +29,8 @@ public class ContractServiceImpl implements ContractService {
 
     private CourseService courseService;
 
+    private StudentInvoiceService studentInvoiceService;
+
     @Override
     public Contract create(Contract contract) {
         if (contract.getId() == 0) {
@@ -42,6 +46,8 @@ public class ContractServiceImpl implements ContractService {
         Optional<Student> student = studentService.getById(createContractDto.getStudentId());
         student.orElseThrow(() -> new EntityNotFoundException("Student was not found with id: " + createContractDto.getStudentId()));
         Contract contract = generateContract(student.get(), course.get());
+        List<StudentInvoice> invoices = studentInvoiceService.generateStudentInvoices(contract);
+        contract.setStudentInvoices(invoices);
         student.get().setActive(true);
         return create(contract).getId();
     }
@@ -135,6 +141,11 @@ public class ContractServiceImpl implements ContractService {
         return contractRepository.findAllByEndDateBefore(localDate);
     }
 
+    @Override
+    public List<Contract> findAllByStatusOpenAndWait() {
+        return contractRepository.findAllByStatusTypeOpenAndWait();
+    }
+
     private ContractDto generateContractDto(Contract contract, Student student) {
         String teacherName = contract.getCourse().getTeacher().getFirstName().concat(" " + contract.getCourse().getTeacher().getLastName());
         ContractDto contractDto = new ContractDto();
@@ -176,5 +187,10 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     public void setCourseService(CourseService courseService) {
         this.courseService = courseService;
+    }
+
+    @Autowired
+    public void setStudentInvoiceService(StudentInvoiceService studentInvoiceService) {
+        this.studentInvoiceService = studentInvoiceService;
     }
 }

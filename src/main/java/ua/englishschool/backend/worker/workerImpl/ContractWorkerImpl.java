@@ -1,4 +1,4 @@
-package ua.englishschool.backend.worker;
+package ua.englishschool.backend.worker.workerImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.englishschool.backend.entity.Contract;
 import ua.englishschool.backend.entity.core.ContractStatusType;
 import ua.englishschool.backend.model.service.ContractService;
+import ua.englishschool.backend.worker.ContractWorker;
 
 import java.time.LocalDate;
 import java.util.List;

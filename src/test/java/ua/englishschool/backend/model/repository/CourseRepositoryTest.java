@@ -74,7 +74,7 @@ public class CourseRepositoryTest {
 
     @Test
     void whenFindAllByStartDateAfter_ReturnCourses() {
-        course2.getPeriodDate().setStartDate(LocalDate.parse("2020-09-27"));
+        course2.getPeriodDate().setStartDate(LocalDate.parse("2021-09-30"));
         entityManager.merge(course2);
         List<Course> courses = courseRepository.findAllByStartDateAfter(LocalDate.now());
 

@@ -50,11 +50,6 @@ public class ContractController {
     @PostMapping(URL)
     @ResponseStatus(HttpStatus.CREATED)
     public long createContract(@RequestBody Contract contract) {
-        if (contract.getCourse().getPeriodDate().getStartDate().isAfter(LocalDate.now())) {
-            contract.setContractStatusType(ContractStatusType.WAIT);
-        } else {
-            contract.setContractStatusType(ContractStatusType.OPEN);
-        }
         long id = contractService.create(contract).getId();
         logger.debug("Contract with id " + id + " was created successfully");
         return id;
