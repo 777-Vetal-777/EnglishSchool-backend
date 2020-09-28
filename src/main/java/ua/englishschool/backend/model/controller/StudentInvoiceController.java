@@ -25,8 +25,8 @@ public class StudentInvoiceController {
     private StudentInvoiceService studentInvoiceService;
 
     @GetMapping(URL_WAIT_INVOICES)
-    public List<StudentInvoiceDto> getUnpaidInvoices() {
-        List<StudentInvoiceDto> studentInvoices = studentInvoiceService.getUnpaidInvoices();
+    public List<StudentInvoiceDto> getWaitInvoices() {
+        List<StudentInvoiceDto> studentInvoices = studentInvoiceService.getWaitInvoices();
         return studentInvoices;
     }
 

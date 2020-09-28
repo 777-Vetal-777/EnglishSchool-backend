@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -202,7 +201,7 @@ public class StudentInvoiceServiceImplTest {
     void whenGetUnpaidInvoices_thenReturnList() {
         when(contractService.findAllByStatusOpenAndWait()).thenReturn(Collections.singletonList(contract));
 
-        List<StudentInvoiceDto> result = studentInvoiceService.getUnpaidInvoices();
+        List<StudentInvoiceDto> result = studentInvoiceService.getWaitInvoices();
 
         assertEquals(Collections.singletonList(studentInvoiceDto), result);
     }

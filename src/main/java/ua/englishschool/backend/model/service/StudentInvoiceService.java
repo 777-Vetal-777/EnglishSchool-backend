@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface StudentInvoiceService extends GenericService<StudentInvoice> {
 
-    List<StudentInvoiceDto> getUnpaidInvoices();
+    List<StudentInvoiceDto> getWaitInvoices();
 
     List<StudentInvoice> generateStudentInvoices(Contract contract);
 

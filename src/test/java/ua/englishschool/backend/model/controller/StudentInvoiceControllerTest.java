@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.englishschool.backend.entity.StudentInvoice;
 import ua.englishschool.backend.entity.dto.StudentInvoiceDto;
 import ua.englishschool.backend.model.service.StudentInvoiceService;
 
@@ -58,7 +57,7 @@ public class StudentInvoiceControllerTest {
 
     @Test
     void getUnpaidInvoices_ReturnList() throws Exception {
-        when(studentInvoiceService.getUnpaidInvoices()).thenReturn(invoiceList);
+        when(studentInvoiceService.getWaitInvoices()).thenReturn(invoiceList);
 
         server.perform(get(URL_WAIT_INVOICES))
                 .andDo(print())

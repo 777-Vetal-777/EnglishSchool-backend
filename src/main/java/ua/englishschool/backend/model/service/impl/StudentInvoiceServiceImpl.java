@@ -80,18 +80,18 @@ public class StudentInvoiceServiceImpl implements StudentInvoiceService {
     }
 
     @Override
-    public List<StudentInvoiceDto> getUnpaidInvoices() {
+    public List<StudentInvoiceDto> getWaitInvoices() {
         List<Contract> contractList = contractService.findAllByStatusOpenAndWait();
-        List<StudentInvoiceDto> unpaidStudentInvoices = new ArrayList<>();
+        List<StudentInvoiceDto> waitStudentInvoices = new ArrayList<>();
         for (Contract contract : contractList) {
             for (StudentInvoice studentInvoice : contract.getStudentInvoices()) {
                 if (studentInvoice.getType() == StudentInvoiceType.WAIT) {
-                    unpaidStudentInvoices.add(generateStudentInvoiceDto(contract, studentInvoice));
+                    waitStudentInvoices.add(generateStudentInvoiceDto(contract, studentInvoice));
                 }
             }
 
         }
-        return unpaidStudentInvoices;
+        return waitStudentInvoices;
     }
 
     @Override
